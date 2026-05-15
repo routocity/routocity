@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PathDraw — 서울 걷기·달리기 코스 플랫폼</title>
+<title>Routocity — 서울 걷기·달리기 코스 플랫폼</title>
 <meta name="description" content="서울 주요 동네의 걷기·달리기·산책 코스. 맛집, 쉼터, 무료 화장실 정보 제공. 외국인도 영어로 이용 가능. Free walking & running courses in Seoul.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -140,7 +140,7 @@
 <div class="topbar">
   <div class="logo">
     <i class="ti ti-map-2"></i>
-    PathDraw
+    Routocity
     <span class="logo-sub" data-ko="서울 걷기·달리기 코스" data-en="Seoul Walking & Running"></span>
   </div>
   <div class="search-wrap">
@@ -176,7 +176,7 @@
     <div class="course-list" id="courseList"></div>
     <div class="donate-strip">
       <i class="ti ti-heart"></i>
-      <span class="t" data-ko="PathDraw 광고 수익의 일부는 각 지역 아이들을 위해 기부됩니다 💚" data-en="Part of PathDraw's ad revenue is donated for local children 💚"></span>
+      <span class="t" data-ko="Routocity 광고 수익의 일부는 각 지역 아이들을 위해 기부됩니다 💚" data-en="Part of Routocity's ad revenue is donated for local children 💚"></span>
     </div>
   </div>
 
@@ -627,8 +627,8 @@ function askMore() {
   if (!selectedId) return;
   const c = COURSES.find(x => x.id === selectedId);
   alert((lang === 'ko'
-    ? `"${c.ko.name}" 코스에 대해 더 궁금한 점이 있으시면 PathDraw 앱에서 커뮤니티를 이용해주세요!`
-    : `For more about "${c.en.name}", check the PathDraw community!`));
+    ? `"${c.ko.name}" 코스에 대해 더 궁금한 점이 있으시면 Routocity 커뮤니티를 이용해주세요!`
+    : `For more about "${c.en.name}", check the Routocity community!`));
 }
 
 document.getElementById('searchInput').addEventListener('input', renderList);
