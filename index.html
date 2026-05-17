@@ -3,645 +3,209 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Routocity — 서울 걷기·달리기 코스</title>
-<meta name="description" content="서울 주요 동네의 걷기·달리기·산책 코스. 맛집, 쉼터, 무료 화장실 정보 무료 제공. Free walking & running courses in Seoul.">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="description" content="서울 주요 동네의 걷기·달리기·산책 코스. 맛집·쉼터·화장실 무료 정보. Free walking & running courses in Seoul.">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{
-  --g:#1D9E75;--gl:#E1F5EE;--gd:#085041;
-  --b:#185FA5;--bl:#E6F1FB;
-  --c:#D85A30;--cl:#FAECE7;
-  --a:#BA7517;--al:#FAEEDA;
-  --pk:#993356;--pkl:#FBEAF0;
-  --bg:#f5f7f6;--sur:#fff;
-  --bor:rgba(0,0,0,0.09);--bors:rgba(0,0,0,0.16);
-  --tx:#1a1a1a;--txs:#555;--txt:#999;
-  --r:12px;--rl:18px;
-  --nav:60px;--top:56px;
-}
-html,body{height:100%;overflow:hidden;font-family:'Noto Sans KR','Inter',sans-serif;background:var(--bg);color:var(--tx)}
-
-/* ── TOP BAR ── */
-.topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--top);background:var(--sur);border-bottom:1px solid var(--bor);display:flex;align-items:center;padding:0 14px;gap:10px}
-.logo{display:flex;align-items:center;gap:7px;font-size:20px;font-weight:700;color:var(--gd);white-space:nowrap}
-.logo i{color:var(--g);font-size:22px}
-.search-wrap{flex:1;display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--bor);border-radius:100px;padding:0 13px;height:38px}
-.search-wrap input{border:none;background:transparent;flex:1;font-size:14px;color:var(--tx);outline:none;font-family:inherit}
-.search-wrap input::placeholder{color:var(--txt)}
-.lang-btn{padding:7px 12px;border:1px solid var(--bor);border-radius:100px;font-size:13px;color:var(--txs);background:var(--sur);cursor:pointer;white-space:nowrap;font-family:inherit}
-
-/* ── DISTRICT SCROLL ── */
-.district-bar{position:fixed;top:var(--top);left:0;right:0;z-index:99;background:var(--sur);border-bottom:1px solid var(--bor);display:flex;overflow-x:auto;scrollbar-width:none;height:52px;align-items:center}
-.district-bar::-webkit-scrollbar{display:none}
-.dtab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 14px;cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;flex-shrink:0;min-width:56px}
-.dtab i{font-size:17px;color:var(--txt)}
-.dtab span{font-size:10px;color:var(--txt)}
-.dtab.active i,.dtab.active span{color:var(--g)}
-.dtab.active span{font-weight:600}
-.dtab.active{border-bottom-color:var(--g)}
-
-/* ── MAIN CONTENT AREA ── */
-.content{position:fixed;top:108px;bottom:var(--nav);left:0;right:0;display:flex;flex-direction:column;overflow:hidden}
-
-/* ── TAB SWITCHER (map/list) ── */
-.view-tabs{display:flex;background:var(--sur);border-bottom:1px solid var(--bor);flex-shrink:0}
-.vtab{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:500;color:var(--txt);border-bottom:2px solid transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
-.vtab i{font-size:15px}
-.vtab.active{color:var(--g);border-bottom-color:var(--g)}
-
-/* ── MAP VIEW ── */
-.map-view{flex:1;position:relative;display:none}
-.map-view.active{display:flex;flex-direction:column}
-.map-view iframe{flex:1;border:none;width:100%}
-.map-gmap-btn{position:absolute;top:10px;right:10px;background:var(--sur);border:1px solid var(--bor);border-radius:var(--r);padding:9px 14px;font-size:13px;font-weight:500;color:var(--g);display:none;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,0.12);cursor:pointer;font-family:inherit}
-.map-gmap-btn.show{display:flex}
-
-/* ── LIST VIEW ── */
-.list-view{flex:1;overflow-y:auto;display:none;padding:10px 12px 4px}
-.list-view.active{display:block}
-
-/* ── TYPE FILTER CHIPS ── */
-.type-chips{display:flex;gap:7px;padding:10px 12px 0;overflow-x:auto;scrollbar-width:none;flex-shrink:0;background:var(--bg)}
-.type-chips::-webkit-scrollbar{display:none}
-.chip{display:flex;align-items:center;gap:5px;padding:7px 14px;border-radius:100px;border:1px solid var(--bor);font-size:13px;color:var(--txs);background:var(--sur);cursor:pointer;white-space:nowrap;font-family:inherit;font-weight:500}
+body{font-family:'Noto Sans KR',sans-serif;background:#f5f7f6;color:#1a1a1a}
+.topbar{background:#fff;border-bottom:1px solid rgba(0,0,0,.1);padding:10px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50}
+.logo{font-size:19px;font-weight:700;color:#085041;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.logo i{color:#1D9E75;font-size:20px}
+.search{flex:1;display:flex;align-items:center;gap:7px;background:#f5f7f6;border:1px solid rgba(0,0,0,.1);border-radius:100px;padding:0 13px;height:38px}
+.search input{border:none;background:transparent;flex:1;font-size:14px;color:#1a1a1a;outline:none;font-family:inherit}
+.search input::placeholder{color:#999}
+.lbtn{padding:7px 11px;border:1px solid rgba(0,0,0,.1);border-radius:100px;font-size:13px;color:#555;background:#fff;cursor:pointer;font-family:inherit}
+.dbar{background:#fff;border-bottom:1px solid rgba(0,0,0,.1);display:flex;overflow-x:auto;scrollbar-width:none;position:sticky;top:58px;z-index:49}
+.dbar::-webkit-scrollbar{display:none}
+.dtab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 13px;cursor:pointer;border-bottom:2.5px solid transparent;flex-shrink:0;min-width:50px}
+.dtab i{font-size:16px;color:#999}
+.dtab span{font-size:10px;color:#999}
+.dtab.on i,.dtab.on span{color:#1D9E75;font-weight:600}
+.dtab.on{border-bottom-color:#1D9E75}
+.vtbar{background:#fff;display:flex;border-bottom:1px solid rgba(0,0,0,.1);position:sticky;top:110px;z-index:48}
+.vtab{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:11px;font-size:14px;font-weight:500;color:#999;border-bottom:2px solid transparent;cursor:pointer}
+.vtab i{font-size:16px}
+.vtab.on{color:#1D9E75;border-bottom-color:#1D9E75}
+#listScreen{display:block}
+#mapScreen{display:none}
+.chips{display:flex;gap:7px;padding:10px 12px;overflow-x:auto;scrollbar-width:none;background:#f5f7f6}
+.chips::-webkit-scrollbar{display:none}
+.chip{display:flex;align-items:center;gap:5px;padding:7px 13px;border-radius:100px;border:1px solid rgba(0,0,0,.1);font-size:13px;font-weight:500;color:#555;background:#fff;cursor:pointer;white-space:nowrap;font-family:inherit}
 .chip i{font-size:14px}
-.chip.active{background:var(--gl);border-color:var(--g);color:var(--gd)}
-
-/* ── COURSE CARDS ── */
-.course-card{background:var(--sur);border:1px solid var(--bor);border-radius:var(--rl);padding:14px;margin-bottom:10px;cursor:pointer;transition:border-color 0.15s,box-shadow 0.15s;active:scale(0.98)}
-.course-card:active{transform:scale(0.99)}
-.course-card.selected{border-color:var(--g);border-width:1.5px;background:var(--gl)}
-.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:9px}
-.card-title{font-size:15px;font-weight:600;color:var(--tx);line-height:1.35}
-.type-badge{display:flex;align-items:center;gap:3px;font-size:11px;padding:4px 9px;border-radius:100px;white-space:nowrap;flex-shrink:0;font-weight:600}
-.card-meta{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:9px}
-.meta-item{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--txs)}
-.meta-item i{font-size:14px}
-.card-tags{display:flex;gap:5px;flex-wrap:wrap}
-.tag{font-size:11px;padding:3px 8px;border-radius:100px;background:var(--bg);color:var(--txt)}
-
-/* ── BOTTOM SHEET (course detail) ── */
-.sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0);z-index:200;pointer-events:none;transition:background 0.3s}
-.sheet-overlay.open{background:rgba(0,0,0,0.35);pointer-events:auto}
-.bottom-sheet{position:fixed;bottom:var(--nav);left:0;right:0;z-index:201;background:var(--sur);border-radius:20px 20px 0 0;box-shadow:0 -4px 24px rgba(0,0,0,0.18);transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);max-height:80vh;overflow-y:auto;padding:0 16px 16px}
-.bottom-sheet.open{transform:translateY(0)}
-.sheet-handle{width:40px;height:4px;background:var(--bors);border-radius:2px;margin:12px auto 14px}
-.sheet-title{font-size:17px;font-weight:700;color:var(--tx);margin-bottom:4px}
-.sheet-tags{font-size:12px;color:var(--txt);margin-bottom:14px;line-height:1.7}
-.sheet-steps{display:flex;align-items:flex-start;gap:0;overflow-x:auto;margin-bottom:14px;padding-bottom:4px;scrollbar-width:none}
-.sheet-steps::-webkit-scrollbar{display:none}
-.step-node{text-align:center;flex-shrink:0;width:72px}
-.step-circle{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 5px;font-size:18px}
-.step-label{font-size:11px;font-weight:600;color:var(--tx);line-height:1.3;word-break:keep-all}
-.step-note{font-size:10px;color:var(--txt);margin-top:2px}
-.step-line{width:16px;height:2px;margin-bottom:28px;flex-shrink:0;opacity:0.3;align-self:flex-start;margin-top:20px}
-.sheet-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
-.stat-box{background:var(--bg);border-radius:var(--r);padding:10px 6px;text-align:center}
-.stat-val{font-size:15px;font-weight:700;color:var(--tx)}
-.stat-lbl{font-size:10px;color:var(--txt);margin-top:2px}
-.poi-section-title{font-size:13px;font-weight:600;color:var(--txs);margin-bottom:10px}
-.poi-list{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
-.poi-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--r);border:1px solid var(--bor);background:var(--sur)}
-.poi-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.poi-name{font-size:13px;font-weight:600;color:var(--tx)}
-.poi-desc{font-size:11px;color:var(--txt);margin-top:1px}
-.sheet-actions{display:flex;gap:8px}
-.btn-main{flex:1;padding:14px;background:var(--g);color:#fff;border:none;border-radius:var(--rl);font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;font-family:inherit}
-.btn-main i{font-size:17px}
-.btn-main:active{background:var(--gd)}
-.btn-sub{padding:14px 16px;background:var(--bg);border:1px solid var(--bor);border-radius:var(--rl);font-size:14px;cursor:pointer;color:var(--tx);font-family:inherit;white-space:nowrap}
-
-/* ── BOTTOM NAV ── */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;height:var(--nav);background:var(--sur);border-top:1px solid var(--bor);display:flex;align-items:center}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0;cursor:pointer}
-.nav-item i{font-size:22px;color:var(--txt)}
-.nav-item span{font-size:10px;color:var(--txt)}
-.nav-item.active i,.nav-item.active span{color:var(--g)}
-.nav-item.active span{font-weight:600}
-
-/* ── DONATE BAR ── */
-.donate-bar{background:var(--gl);border-top:1px solid #9FE1CB;padding:9px 14px;display:flex;align-items:center;gap:7px;flex-shrink:0}
-.donate-bar i{color:var(--g);font-size:15px;flex-shrink:0}
-.donate-bar span{font-size:11px;color:var(--gd);line-height:1.4}
-
-/* ── EMPTY STATE ── */
-.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;text-align:center;gap:10px}
-.empty i{font-size:44px;color:var(--txt);opacity:0.4}
-.empty p{font-size:14px;color:var(--txt)}
-
-/* ── PC LAYOUT (768px+) ── */
+.chip.on{background:#E1F5EE;border-color:#1D9E75;color:#085041}
+.clist{padding:8px 12px 40px}
+.card{background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:16px;padding:14px;margin-bottom:10px;cursor:pointer}
+.card:active{transform:scale(0.99)}
+.card.on{border:1.5px solid #1D9E75;background:#E1F5EE}
+.ctop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:9px}
+.cname{font-size:15px;font-weight:600;color:#1a1a1a;line-height:1.35}
+.cbadge{display:flex;align-items:center;gap:3px;font-size:11px;font-weight:600;padding:4px 9px;border-radius:100px;white-space:nowrap;flex-shrink:0}
+.cmeta{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:9px}
+.mi{display:flex;align-items:center;gap:4px;font-size:13px;color:#555}
+.mi i{font-size:14px}
+.ctags{display:flex;gap:5px;flex-wrap:wrap}
+.ctag{font-size:11px;padding:3px 8px;border-radius:100px;background:#f5f7f6;color:#999}
+.donate{background:#E1F5EE;border-top:1px solid #9FE1CB;padding:9px 14px;display:flex;align-items:center;gap:7px}
+.donate i{color:#1D9E75;font-size:15px;flex-shrink:0}
+.donate span{font-size:11px;color:#085041;line-height:1.4}
+.mapwrap{height:calc(100vh - 170px);position:relative}
+.mapwrap iframe{width:100%;height:100%;border:none;display:block}
+.gmapbtn{position:absolute;top:10px;right:10px;background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:12px;padding:9px 14px;font-size:13px;font-weight:500;color:#1D9E75;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.12);cursor:pointer;font-family:inherit}
+.gmapbtn i{font-size:15px}
+.ovl{position:fixed;inset:0;background:rgba(0,0,0,0);z-index:100;pointer-events:none;transition:background .3s}
+.ovl.on{background:rgba(0,0,0,.4);pointer-events:auto}
+.sheet{position:fixed;bottom:0;left:0;right:0;z-index:101;background:#fff;border-radius:20px 20px 0 0;box-shadow:0 -4px 24px rgba(0,0,0,.18);transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);max-height:85vh;overflow-y:auto;padding:0 16px 32px}
+.sheet.on{transform:translateY(0)}
+.handle{width:40px;height:4px;background:rgba(0,0,0,.15);border-radius:2px;margin:12px auto 14px}
+.sh-ttl{font-size:17px;font-weight:700;color:#1a1a1a;margin-bottom:4px}
+.sh-tags{font-size:12px;color:#999;margin-bottom:14px;line-height:1.7}
+.steps{display:flex;align-items:flex-start;overflow-x:auto;margin-bottom:14px;scrollbar-width:none}
+.steps::-webkit-scrollbar{display:none}
+.snode{text-align:center;flex-shrink:0;width:72px}
+.scirc{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 5px}
+.slbl{font-size:11px;font-weight:600;color:#1a1a1a;line-height:1.3;word-break:keep-all}
+.snote{font-size:10px;color:#999;margin-top:2px}
+.sline{width:14px;height:2px;margin-top:20px;flex-shrink:0;opacity:.3}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.sbox{background:#f5f7f6;border-radius:12px;padding:10px 6px;text-align:center}
+.sval{font-size:15px;font-weight:700;color:#1a1a1a}
+.slbl2{font-size:10px;color:#999;margin-top:2px}
+.poi-ttl{font-size:13px;font-weight:600;color:#555;margin-bottom:10px}
+.pois{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.poi{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1px solid rgba(0,0,0,.1)}
+.poiic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.poinm{font-size:13px;font-weight:600;color:#1a1a1a}
+.poids{font-size:11px;color:#999;margin-top:1px}
+.acts{display:flex;gap:8px}
+.btngo{flex:1;padding:14px;background:#1D9E75;color:#fff;border:none;border-radius:16px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;font-family:inherit}
+.btngo:active{background:#085041}
+.btngo i{font-size:17px}
+.btncls{padding:14px 18px;background:#f5f7f6;border:1px solid rgba(0,0,0,.1);border-radius:16px;font-size:14px;cursor:pointer;color:#1a1a1a;font-family:inherit}
 @media(min-width:768px){
-  .content{flex-direction:row}
-  .view-tabs{display:none}
-  .map-view{display:flex!important;flex:1}
-  .list-panel{width:340px;flex-shrink:0;display:flex;flex-direction:column;background:var(--sur);border-right:1px solid var(--bor);overflow:hidden}
-  .list-view{display:block!important;flex:1;padding:10px}
-  .type-chips{background:var(--sur);border-bottom:1px solid var(--bor)}
-  .bottom-nav{display:none}
-  .bottom-sheet{bottom:0;max-height:60vh}
-  body{overflow:hidden}
+  .vtbar{display:none}
+  #listScreen,#mapScreen{display:block!important}
+  .page{display:flex;height:calc(100vh - 110px)}
+  #listScreen{width:340px;flex-shrink:0;overflow-y:auto;border-right:1px solid rgba(0,0,0,.1)}
+  .clist{padding-bottom:10px}
+  #mapScreen{flex:1}
+  .mapwrap{height:100%}
+  .sheet{bottom:0;max-height:55vh}
 }
 </style>
 </head>
 <body>
-
-<!-- TOP BAR -->
 <div class="topbar">
-  <div class="logo"><i class="ti ti-route-2" aria-hidden="true"></i>Routocity</div>
-  <div class="search-wrap">
-    <i class="ti ti-search" style="color:var(--txt);font-size:15px" aria-hidden="true"></i>
-    <input id="searchInput" type="text" placeholder="코스·장소·태그 검색...">
-  </div>
-  <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  <div class="logo"><i class="ti ti-route-2"></i>Routocity</div>
+  <div class="search"><i class="ti ti-search" style="color:#999;font-size:15px"></i><input id="si" type="text" placeholder="코스·장소·태그 검색..."></div>
+  <button class="lbtn" id="lbtn" onclick="toggleLang()">EN</button>
 </div>
-
-<!-- DISTRICT BAR -->
-<div class="district-bar" id="districtBar"></div>
-
-<!-- MAIN CONTENT -->
-<div class="content">
-
-  <!-- PC: 왼쪽 패널 / 모바일: 탭 전환 -->
-  <div class="list-panel" id="listPanel">
-    <!-- 타입 필터 -->
-    <div class="type-chips" id="typeChips">
-      <button class="chip active" data-type="all"><i class="ti ti-layout-grid" aria-hidden="true"></i><span class="t" data-ko="전체" data-en="All"></span></button>
-      <button class="chip" data-type="walk"><i class="ti ti-walk" aria-hidden="true"></i><span class="t" data-ko="걷기" data-en="Walk"></span></button>
-      <button class="chip" data-type="run"><i class="ti ti-run" aria-hidden="true"></i><span class="t" data-ko="달리기" data-en="Run"></span></button>
-      <button class="chip" data-type="meal"><i class="ti ti-bowl-spoon" aria-hidden="true"></i><span class="t" data-ko="식후산책" data-en="Post-meal"></span></button>
-      <button class="chip" data-type="pet"><i class="ti ti-paw" aria-hidden="true"></i><span class="t" data-ko="반려동물" data-en="Pet"></span></button>
-      <button class="chip" data-type="travel"><i class="ti ti-plane" aria-hidden="true"></i><span class="t" data-ko="여행자" data-en="Traveler"></span></button>
-    </div>
-    <!-- 코스 목록 -->
-    <div class="list-view active" id="courseList"></div>
-    <!-- 기부 배너 -->
-    <div class="donate-bar">
-      <i class="ti ti-heart" aria-hidden="true"></i>
-      <span class="t" data-ko="광고 수익 일부는 지역 아이들을 위해 기부됩니다 💚" data-en="Ad revenue partially donated for local children 💚"></span>
-    </div>
-  </div>
-
-  <!-- 지도/목록 탭 (모바일) -->
-  <div class="view-tabs" id="viewTabs">
-    <div class="vtab active" id="tabList" onclick="switchView('list')">
-      <i class="ti ti-list" aria-hidden="true"></i>
-      <span class="t" data-ko="코스 목록" data-en="Courses"></span>
-    </div>
-    <div class="vtab" id="tabMap" onclick="switchView('map')">
-      <i class="ti ti-map-2" aria-hidden="true"></i>
-      <span class="t" data-ko="지도" data-en="Map"></span>
-    </div>
-  </div>
-
-  <!-- 지도 -->
-  <div class="map-view active" id="mapView">
-    <iframe id="mapFrame"
-      src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d50000!2d126.978!3d37.563!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sko!2skr!4v1700000000000"
-      allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-    </iframe>
-    <button class="map-gmap-btn" id="gmapBtn" onclick="openGmap()">
-      <i class="ti ti-brand-google-maps" aria-hidden="true"></i>
-      <span class="t" data-ko="구글맵으로 열기" data-en="Open in Google Maps"></span>
-    </button>
-  </div>
-
+<div class="dbar" id="dbar"></div>
+<div class="vtbar">
+  <div class="vtab on" id="vtL" onclick="showScreen('list')"><i class="ti ti-list"></i><span class="t" data-ko="코스 목록" data-en="Courses"></span></div>
+  <div class="vtab" id="vtM" onclick="showScreen('map')"><i class="ti ti-map-2"></i><span class="t" data-ko="지도" data-en="Map"></span></div>
 </div>
-
-<!-- BOTTOM SHEET (코스 상세) -->
-<div class="sheet-overlay" id="overlay" onclick="closeSheet()"></div>
-<div class="bottom-sheet" id="bottomSheet">
-  <div class="sheet-handle"></div>
-  <div class="sheet-title" id="sheetTitle"></div>
-  <div class="sheet-tags" id="sheetTags"></div>
-  <div class="sheet-steps" id="sheetSteps"></div>
-  <div class="sheet-stats" id="sheetStats"></div>
-  <div class="poi-section-title t" data-ko="코스 주변 정보" data-en="Along this route"></div>
-  <div class="poi-list" id="sheetPOI"></div>
-  <div class="sheet-actions">
-    <button class="btn-main" onclick="openGmap()">
-      <i class="ti ti-brand-google-maps" aria-hidden="true"></i>
-      <span class="t" data-ko="구글맵으로 길 안내" data-en="Navigate in Google Maps"></span>
-    </button>
-    <button class="btn-sub t" data-ko="닫기" data-en="Close" onclick="closeSheet()"></button>
+<div class="page">
+  <div id="listScreen">
+    <div class="chips" id="chips">
+      <button class="chip on" data-type="all"><i class="ti ti-layout-grid"></i><span class="t" data-ko="전체" data-en="All"></span></button>
+      <button class="chip" data-type="walk"><i class="ti ti-walk"></i><span class="t" data-ko="걷기" data-en="Walk"></span></button>
+      <button class="chip" data-type="run"><i class="ti ti-run"></i><span class="t" data-ko="달리기" data-en="Run"></span></button>
+      <button class="chip" data-type="meal"><i class="ti ti-bowl-spoon"></i><span class="t" data-ko="식후산책" data-en="Post-meal"></span></button>
+      <button class="chip" data-type="pet"><i class="ti ti-paw"></i><span class="t" data-ko="반려동물" data-en="Pet"></span></button>
+      <button class="chip" data-type="travel"><i class="ti ti-plane"></i><span class="t" data-ko="여행자" data-en="Traveler"></span></button>
+    </div>
+    <div class="clist" id="clist"></div>
+    <div class="donate"><i class="ti ti-heart"></i><span class="t" data-ko="광고 수익 일부는 지역 아이들을 위해 기부됩니다 💚" data-en="Ad revenue partially donated for local children 💚"></span></div>
+  </div>
+  <div id="mapScreen">
+    <div class="mapwrap">
+      <iframe id="mf" src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d50000!2d126.978!3d37.563!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sko!2skr!4v1700000000000" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <button class="gmapbtn" id="gb" onclick="openGmap()" style="display:none"><i class="ti ti-brand-google-maps"></i><span class="t" data-ko="구글맵으로 열기" data-en="Open in Google Maps"></span></button>
+    </div>
   </div>
 </div>
-
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-  <div class="nav-item active" onclick="switchView('list')">
-    <i class="ti ti-list" aria-hidden="true"></i>
-    <span class="t" data-ko="코스" data-en="Courses"></span>
+<div class="ovl" id="ovl" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="handle"></div>
+  <div class="sh-ttl" id="shT"></div>
+  <div class="sh-tags" id="shTg"></div>
+  <div class="steps" id="shSt"></div>
+  <div class="stats" id="shStat"></div>
+  <div class="poi-ttl t" data-ko="코스 주변 정보" data-en="Along this route"></div>
+  <div class="pois" id="shP"></div>
+  <div class="acts">
+    <button class="btngo" onclick="openGmap()"><i class="ti ti-brand-google-maps"></i><span class="t" data-ko="구글맵으로 길 안내" data-en="Open in Google Maps"></span></button>
+    <button class="btncls t" data-ko="닫기" data-en="Close" onclick="closeSheet()"></button>
   </div>
-  <div class="nav-item" onclick="switchView('map')">
-    <i class="ti ti-map-2" aria-hidden="true"></i>
-    <span class="t" data-ko="지도" data-en="Map"></span>
-  </div>
-  <div class="nav-item" onclick="focusSearch()">
-    <i class="ti ti-search" aria-hidden="true"></i>
-    <span class="t" data-ko="검색" data-en="Search"></span>
-  </div>
-  <div class="nav-item" onclick="switchLang()">
-    <i class="ti ti-world" aria-hidden="true"></i>
-    <span id="langNavLabel">EN</span>
-  </div>
-</nav>
-
+</div>
 <script>
-// ── DATA ──────────────────────────────────────
-const DISTRICTS=[
-  {id:'all',icon:'ti-map',ko:'전체',en:'All'},
-  {id:'gangnam',icon:'ti-building',ko:'강남',en:'Gangnam'},
-  {id:'seongsu',icon:'ti-trees',ko:'성수',en:'Seongsu'},
-  {id:'hongdae',icon:'ti-music',ko:'홍대',en:'Hongdae'},
-  {id:'itaewon',icon:'ti-world',ko:'이태원',en:'Itaewon'},
-  {id:'insadong',icon:'ti-brush',ko:'인사동',en:'Insadong'},
-  {id:'gwanghwa',icon:'ti-building-arch',ko:'광화문',en:'Gwanghwamun'},
-  {id:'jamsil',icon:'ti-roller-skating',ko:'잠실',en:'Jamsil'},
+const DIS=[{id:'all',ic:'ti-map',ko:'전체',en:'All'},{id:'gangnam',ic:'ti-building',ko:'강남',en:'Gangnam'},{id:'seongsu',ic:'ti-trees',ko:'성수',en:'Seongsu'},{id:'hongdae',ic:'ti-music',ko:'홍대',en:'Hongdae'},{id:'itaewon',ic:'ti-world',ko:'이태원',en:'Itaewon'},{id:'insadong',ic:'ti-brush',ko:'인사동',en:'Insadong'},{id:'gwanghwa',ic:'ti-building-arch',ko:'광화문',en:'Gwanghwamun'},{id:'jamsil',ic:'ti-roller-skating',ko:'잠실',en:'Jamsil'}];
+const CS=[
+{id:'g1',d:'gangnam',t:'travel',ko:{n:'별마당→강남스타일→봉은사 K-투어',tags:['여행자','K-투어','강남스타일','봉은사']},en:{n:'Starfield→Gangnam Style→Bongeunsa K-Tour',tags:['traveler','K-Tour','GangnamStyle','Bongeunsa']},km:'3.1km',tm:{ko:'40분',en:'40 min'},cal:'135kcal',dif:{ko:'보통',en:'Moderate'},steps:[{ic:'ti-books',ko:'별마당도서관',en:'Starfield Library',nt:{ko:'13m 책장',en:'13m bookshelf'}},{ic:'ti-hand-stop',ko:'강남스타일 조각상',en:'Gangnam Style Statue',nt:{ko:'K-pop 포토존',en:'K-pop photo spot'}},{ic:'ti-building-church',ko:'봉은사',en:'Bongeunsa Temple',nt:{ko:'도심 사찰',en:'City temple'}}],map:'https://www.google.com/maps/embed?pb=!1m40!1m12!1m3!1d3165!2d127.058!3d37.512!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m25!3e2!4m5!1s0x357ca41d8b59a3bb%3A0x6b7a45487e4dcd97!2sStarfield+Library!3m2!1d37.510!2d127.060!4m5!1s0x357ca48f40868de5%3A0x48cc34615936b4b3!2sGangnam+Style+Sculpture!3m2!1d37.512!2d127.060!4m5!1s0x357ca4096168ee15%3A0x61c5c99a3c6dc1a!2sBongeunsa+Temple!3m2!1d37.514!2d127.057!5e0!3m2!1sko!2skr!4v1700000000001',gmap:'https://www.google.com/maps/dir/Starfield+Library+COEX/Gangnam+Style+Sculpture/Bongeunsa+Temple/@37.512,127.059,16z/',pois:[{pt:'food',ic:'ti-coffee',ko:['별마당 스타벅스','도서관 내부 · 인스타 명소'],en:['Starfield Starbucks','Inside library · Instagram spot']},{pt:'rest',ic:'ti-hand-stop',ko:['강남스타일 조각상','24시간 개방 · 음악 재생'],en:['Gangnam Style Statue','Open 24h · Music playing']},{pt:'rest',ic:'ti-trees',ko:['봉은사 경내 산책로','5AM-10PM · 무료 입장'],en:['Bongeunsa grounds','5AM-10PM · Free entry']},{pt:'toilet',ic:'ti-toilet-paper',ko:['봉은사 화장실','무료 · 경내 위치'],en:['Bongeunsa restroom','Free · Inside temple']}]},
+{id:'g2',d:'gangnam',t:'meal',ko:{n:'선정릉 식후 소화 산책',tags:['식후산책','혈당관리','선정릉','직장인']},en:{n:'Post-meal Stroll at Seolleung Tombs',tags:['post-meal','bloodsugar','royaltombs','office']},km:'1.8km',tm:{ko:'22분',en:'22 min'},cal:'80kcal',dif:{ko:'쉬움',en:'Easy'},steps:[{ic:'ti-bowl-spoon',ko:'점심 식사 후 출발',en:'Start after lunch',nt:{ko:'선릉역 근처',en:'Near Seolleung stn'}},{ic:'ti-building-arch',ko:'선정릉 입구',en:'Seolleung entrance',nt:{ko:'입장료 1,000원',en:'₩1,000 entry'}},{ic:'ti-trees',ko:'소나무 숲길',en:'Pine forest trail',nt:{ko:'힐링 완료',en:'Healing done'}}],map:'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1582!2d127.052!3d37.508!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca47869a43d71%3A0x2a5a9ddc0c8b4d12!2sSeolleung+and+Jeongneung+Royal+Tombs!5e0!3m2!1sko!2skr!4v1700000000002',gmap:'https://www.google.com/maps/place/Seolleung+and+Jeongneung+Royal+Tombs/@37.5074069,127.0520052,17z/',pois:[{pt:'food',ic:'ti-soup',ko:['선릉역 직장인 맛집','테헤란로 인근 · 7~10,000원'],en:['Seolleung lunch spots','Near Teheran-ro · ₩7~10,000']},{pt:'rest',ic:'ti-armchair',ko:['선정릉 잔디광장','소나무 그늘 · 벤치 완비'],en:['Seolleung lawn','Pine shade · Benches available']},{pt:'toilet',ic:'ti-toilet-paper',ko:['선정릉 공원 화장실','무료 · 접근 용이'],en:['Seolleung restroom','Free · Easy access']}]},
+{id:'s1',d:'seongsu',t:'walk',ko:{n:'서울숲→성수 카페거리 감성 산책',tags:['걷기','서울숲','성수카페','감성']},en:{n:'Seoul Forest → Seongsu Cafe Street Walk',tags:['walk','SeoulForest','cafe','hipster']},km:'3.8km',tm:{ko:'48분',en:'48 min'},cal:'165kcal',dif:{ko:'쉬움',en:'Easy'},steps:[{ic:'ti-trees',ko:'서울숲 입구',en:'Seoul Forest gate',nt:{ko:'무료 입장',en:'Free entry'}},{ic:'ti-deer',ko:'사슴 생태원',en:'Deer eco-zone',nt:{ko:'사슴 먹이주기',en:'Feed the deer'}},{ic:'ti-coffee',ko:'성수 카페거리',en:'Seongsu Cafe Street',nt:{ko:'어니언·대림창고',en:'Onion · Daelim'}}],map:'https://www.google.com/maps/embed?pb=!1m26!1m12!1m3!1d3162!2d127.036!3d37.543!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m20!3e2!4m5!1s0x357ca4d4a8a7f3c5%3A0x8a2f5b9e6c7d8e9f!2sSeoul+Forest!3m2!1d37.544!2d127.038!4m5!1s0x357ca4e1f5b8c7d3%3A0x9b3e6a7f8c5d4e2a!2sCafe+Onion+Seongsu!3m2!1d37.546!2d127.057!4m5!1s0x357ca4b2d3c1e0f7%3A0x4c5d6e7f8a9b0c1d!2sCommon+Ground+Seoul!3m2!1d37.540!2d127.058!5e0!3m2!1sko!2skr!4v1700000000003',gmap:'https://www.google.com/maps/dir/Seoul+Forest/Cafe+Onion+Seongsu/Common+Ground+Seoul/@37.543,127.047,15z/',pois:[{pt:'food',ic:'ti-coffee',ko:['카페 어니언 성수','공장 리모델링 감성 카페'],en:['Cafe Onion Seongsu','Factory-converted cafe']},{pt:'food',ic:'ti-building-store',ko:['커먼 그라운드','컨테이너 쇼핑몰 · 팝업 성지'],en:['Common Ground','Container mall · Popup heaven']},{pt:'rest',ic:'ti-trees',ko:['서울숲 잔디 광장','피크닉 · 무료'],en:['Seoul Forest lawn','Picnic · Free']},{pt:'toilet',ic:'ti-toilet-paper',ko:['서울숲 공원 화장실','무료'],en:['Seoul Forest restroom','Free']}]},
+{id:'s2',d:'seongsu',t:'pet',ko:{n:'뚝섬 한강 반려견 산책',tags:['반려동물','강아지','한강','뚝섬']},en:{n:'Ttukseom Han River Pet Walk',tags:['pet','dog','HanRiver','Ttukseom']},km:'2.5km',tm:{ko:'35분',en:'35 min'},cal:'108kcal',dif:{ko:'쉬움',en:'Easy'},steps:[{ic:'ti-paw',ko:'뚝섬역 출발',en:'Start Ttukseom stn',nt:{ko:'리드줄 필수',en:'Leash required'}},{ic:'ti-waves',ko:'한강 수변 산책로',en:'Han River path',nt:{ko:'탁 트인 강변',en:'Open riverside'}},{ic:'ti-trees',ko:'뚝섬 한강공원',en:'Ttukseom River Park',nt:{ko:'잔디 · 수상레저',en:'Lawn · Water sports'}}],map:'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3162!2d127.065!3d37.530!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca4a7e5c3b2d1%3A0x1a2b3c4d5e6f7a8b!2sTtukseom+Hangang+Park!5e0!3m2!1sko!2skr!4v1700000000004',gmap:'https://www.google.com/maps/place/Ttukseom+Hangang+Park/@37.530,127.065,16z/',pois:[{pt:'food',ic:'ti-coffee',ko:['뚝섬 한강 카페','한강뷰 · 반려동물 동반 가능'],en:['Ttukseom River cafe','Pet-friendly']},{pt:'rest',ic:'ti-armchair',ko:['뚝섬 반려동물 놀이터','무료'],en:['Pet playground','Free']},{pt:'toilet',ic:'ti-toilet-paper',ko:['한강 공원 화장실','무료 · 24시간'],en:['Han River restroom','Free · 24h']}]},
+{id:'h1',d:'hongdae',t:'walk',ko:{n:'홍대→경의선숲길→망원동 산책',tags:['걷기','홍대','경의선숲길','망원동']},en:{n:'Hongdae→Gyeongui Forest→Mangwon Walk',tags:['walk','Hongdae','GyeonguiForest','Mangwon']},km:'4.2km',tm:{ko:'52분',en:'52 min'},cal:'182kcal',dif:{ko:'쉬움',en:'Easy'},steps:[{ic:'ti-music',ko:'홍대 걷고싶은거리',en:'Hongdae Wanna Walk St.',nt:{ko:'버스킹·예술',en:'Busking · Art'}},{ic:'ti-trees',ko:'경의선숲길',en:'Gyeongui Line Forest',nt:{ko:'폐선로 공원',en:'Railway park'}},{ic:'ti-building-store',ko:'망원시장',en:'Mangwon Market',nt:{ko:'로컬 맛집 성지',en:'Local food heaven'}}],map:'https://www.google.com/maps/embed?pb=!1m34!1m12!1m3!1d3162!2d126.923!3d37.556!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m22!3e2!4m5!1s0x357c98f79c29e9d7%3A0x7e8f5a6b4c3d2e1f!2sHongdae+Street!3m2!1d37.556!2d126.924!4m5!1s0x357c98e4a3b2c1d0%3A0x5f6e7d8c9b0a1b2c!2sGyeongui+Line+Forest+Park!3m2!1d37.555!2d126.916!4m5!1s0x357c98a1b2c3d4e5%3A0x6a7b8c9d0e1f2a3b!2sMangwon+Market!3m2!1d37.556!2d126.903!5e0!3m2!1sko!2skr!4v1700000000005',gmap:'https://www.google.com/maps/dir/Hongdae+Street/Gyeongui+Line+Forest+Park/Mangwon+Market/@37.556,126.914,15z/',pois:[{pt:'food',ic:'ti-bakery',ko:['망원동 로컬 베이커리','뚱카롱 유명'],en:['Mangwon local bakery','Famous macarons']},{pt:'rest',ic:'ti-trees',ko:['경의선숲길 벤치','고양이 많음'],en:['Gyeongui Forest bench','Lots of cats']},{pt:'toilet',ic:'ti-toilet-paper',ko:['홍대 공중화장실','무료'],en:['Hongdae public restroom','Free']}]},
+{id:'i1',d:'itaewon',t:'travel',ko:{n:'경리단길→해방촌→남산 힐링 코스',tags:['여행자','이태원','경리단길','남산']},en:{n:'Gyeongridangil→Haebangchon→Namsan Hike',tags:['traveler','Itaewon','Gyeongridangil','Namsan']},km:'4.8km',tm:{ko:'65분',en:'65 min'},cal:'240kcal',dif:{ko:'보통',en:'Moderate'},steps:[{ic:'ti-world',ko:'이태원역 출발',en:'Start Itaewon stn',nt:{ko:'다국적 거리',en:'Multicultural st.'}},{ic:'ti-building-store',ko:'경리단길',en:'Gyeongridangil',nt:{ko:'힙한 레스토랑',en:'Hip restaurants'}},{ic:'ti-mountain',ko:'남산 산책로',en:'Namsan trail',nt:{ko:'서울 전경',en:'Seoul panorama'}}],map:'https://www.google.com/maps/embed?pb=!1m34!1m12!1m3!1d3163!2d126.994!3d37.534!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m22!3e2!4m5!1s0x357ca1f2a3b4c5d6%3A0x7e8f9a0b1c2d3e4f!2sItaewon+Station!3m2!1d37.534!2d126.994!4m5!1s0x357ca1e4f5d6c7b8%3A0x3a4b5c6d7e8f9a0b!2sGyeongridangil!3m2!1d37.537!2d126.995!4m5!1s0x357ca1d3e4f5a6b7%3A0x8f9a0b1c2d3e4f5a!2sNamsan+Park!3m2!1d37.551!2d126.980!5e0!3m2!1sko!2skr!4v1700000000006',gmap:'https://www.google.com/maps/dir/Itaewon+Station/Gyeongridangil/Namsan+Park/@37.540,126.990,15z/',pois:[{pt:'food',ic:'ti-globe',ko:['이태원 다국적 레스토랑','중동·유럽·미국 음식'],en:['Itaewon world cuisine','Middle East · Europe · American']},{pt:'food',ic:'ti-coffee',ko:['해방촌 감성 카페','루프탑 뷰'],en:['Haebangchon cafe','Rooftop view']},{pt:'toilet',ic:'ti-toilet-paper',ko:['남산 공원 화장실','무료'],en:['Namsan Park restroom','Free']}]},
+{id:'in1',d:'insadong',t:'travel',ko:{n:'인사동→북촌한옥마을→창덕궁 전통 코스',tags:['여행자','인사동','북촌','한옥','창덕궁']},en:{n:'Insadong→Bukchon Hanok→Changdeokgung Tour',tags:['traveler','Insadong','Bukchon','Hanok','Palace']},km:'3.5km',tm:{ko:'50분',en:'50 min'},cal:'152kcal',dif:{ko:'보통',en:'Moderate'},steps:[{ic:'ti-brush',ko:'인사동 거리',en:'Insadong Street',nt:{ko:'전통 공예품',en:'Traditional crafts'}},{ic:'ti-home',ko:'북촌한옥마을',en:'Bukchon Hanok Village',nt:{ko:'전통 한옥',en:'Traditional houses'}},{ic:'ti-building-arch',ko:'창덕궁',en:'Changdeokgung Palace',nt:{ko:'유네스코 세계유산',en:'UNESCO Heritage'}}],map:'https://www.google.com/maps/embed?pb=!1m40!1m12!1m3!1d3162!2d126.982!3d37.577!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m25!3e2!4m5!1s0x357cbc8a93a2b3c4%3A0x1d2e3f4a5b6c7d8e!2sInsadong!3m2!1d37.574!2d126.986!4m5!1s0x357cbc7e8f9a0b1c%3A0x2e3f4a5b6c7d8e9f!2sBukchon+Hanok+Village!3m2!1d37.582!2d126.985!4m5!1s0x357cbc6d7e8f9a0b%3A0x3f4a5b6c7d8e9f0a!2sChangdeokgung+Palace!3m2!1d37.579!2d126.991!5e0!3m2!1sko!2skr!4v1700000000007',gmap:'https://www.google.com/maps/dir/Insadong/Bukchon+Hanok+Village/Changdeokgung+Palace/@37.578,126.986,16z/',pois:[{pt:'food',ic:'ti-tools-kitchen',ko:['인사동 전통 찻집','쌍화차·식혜'],en:['Insadong traditional tea house','Herbal tea · Korean sweets']},{pt:'food',ic:'ti-bowl',ko:['북촌 전통 한식당','비빔밥·된장찌개'],en:['Bukchon Korean restaurant','Bibimbap · Doenjang jjigae']},{pt:'toilet',ic:'ti-toilet-paper',ko:['북촌 공중화장실','무료'],en:['Bukchon public restroom','Free']}]},
+{id:'gw1',d:'gwanghwa',t:'walk',ko:{n:'경복궁→청계천→광화문광장 역사 산책',tags:['걷기','경복궁','청계천','광화문','역사']},en:{n:'Gyeongbokgung→Cheonggyecheon→Gwanghwamun Walk',tags:['walk','Gyeongbokgung','Cheonggyecheon','history']},km:'4.0km',tm:{ko:'50분',en:'50 min'},cal:'174kcal',dif:{ko:'쉬움',en:'Easy'},steps:[{ic:'ti-building-arch',ko:'경복궁 정문',en:'Gyeongbokgung Gate',nt:{ko:'근위대 교대식',en:'Guard ceremony'}},{ic:'ti-building',ko:'광화문광장',en:'Gwanghwamun Square',nt:{ko:'이순신·세종대왕',en:'YiSun-sin · Sejong'}},{ic:'ti-waves',ko:'청계천 산책로',en:'Cheonggyecheon stream',nt:{ko:'도심 속 물길',en:'Urban stream path'}}],map:'https://www.google.com/maps/embed?pb=!1m40!1m12!1m3!1d3162!2d126.977!3d37.576!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m25!3e2!4m5!1s0x357cbc6c8a79a421%3A0x3d5c7f9e2b1a0f8d!2sGyeongbokgung+Palace!3m2!1d37.578!2d126.977!4m5!1s0x357cbc74f6b8a3e1%3A0x2a1b0f9e8d7c6b5a!2sGwanghwamun+Square!3m2!1d37.571!2d126.977!4m5!1s0x357ca0e5a6b7c8d9%3A0x9e8f0a1b2c3d4e5f!2sCheonggyecheon+Stream!3m2!1d37.570!2d126.978!5e0!3m2!1sko!2skr!4v1700000000008',gmap:'https://www.google.com/maps/dir/Gyeongbokgung+Palace/Gwanghwamun+Square/Cheonggyecheon+Stream/@37.573,126.977,15z/',pois:[{pt:'food',ic:'ti-soup',ko:['광화문 점심 맛집 골목','직장인 맛집'],en:['Gwanghwamun lunch alley','Office worker spots']},{pt:'rest',ic:'ti-waves',ko:['청계천 수변 벤치','여름 물놀이·겨울 빛축제'],en:['Cheonggyecheon streamside bench','Summer water play · Winter lights']},{pt:'toilet',ic:'ti-toilet-paper',ko:['광화문광장 화장실','무료 · 지하'],en:['Gwanghwamun Square restroom','Free · Underground']}]},
+{id:'j1',d:'jamsil',t:'walk',ko:{n:'석촌호수→롯데월드타워→올림픽공원 산책',tags:['걷기','석촌호수','잠실','롯데타워','가족']},en:{n:'Seokchon Lake→Lotte World Tower→Olympic Park',tags:['walk','SeokchonLake','Jamsil','LotteTower','family']},km:'5.0km',tm:{ko:'62분',en:'62 min'},cal:'218kcal',dif:{ko:'보통',en:'Moderate'},steps:[{ic:'ti-droplet',ko:'석촌호수 벚꽃길',en:'Seokchon Lake cherry path',nt:{ko:'봄 명소',en:'Spring spot'}},{ic:'ti-building-skyscraper',ko:'롯데월드타워',en:'Lotte World Tower',nt:{ko:'555m 전망',en:'555m view'}},{ic:'ti-flame',ko:'올림픽공원',en:'Olympic Park',nt:{ko:'88 올림픽 성화',en:'88 Olympic torch'}}],map:'https://www.google.com/maps/embed?pb=!1m40!1m12!1m3!1d3163!2d127.100!3d37.512!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m25!3e2!4m5!1s0x357ca5b3c4d5e6f7%3A0x8a9b0c1d2e3f4a5b!2sSeokchon+Lake!3m2!1d37.510!2d127.099!4m5!1s0x357ca5a2b3c4d5e6%3A0x7b8c9d0e1f2a3b4c!2sLotte+World+Tower!3m2!1d37.512!2d127.102!4m5!1s0x357ca5c4d5e6f7a8%3A0x6c7d8e9f0a1b2c3d!2sOlympic+Park!3m2!1d37.520!2d127.119!5e0!3m2!1sko!2skr!4v1700000000009',gmap:'https://www.google.com/maps/dir/Seokchon+Lake/Lotte+World+Tower/Olympic+Park+Seoul/@37.514,127.107,15z/',pois:[{pt:'food',ic:'ti-cake',ko:['석촌호수 카페거리','호수뷰 · 봄 벚꽃'],en:['Seokchon Lake cafes','Lake view · Spring blossoms']},{pt:'rest',ic:'ti-trees',ko:['올림픽공원 잔디밭','무료 · 피크닉'],en:['Olympic Park lawn','Free · Picnic']},{pt:'toilet',ic:'ti-toilet-paper',ko:['올림픽공원 화장실','무료'],en:['Olympic Park restroom','Free']}]}
 ];
-
-const COURSES=[
-  {id:'g1',district:'gangnam',type:'travel',
-   ko:{name:'별마당→강남스타일→봉은사 K-투어',tags:['여행자','K-투어','강남스타일','봉은사','별마당도서관']},
-   en:{name:'Starfield→Gangnam Style→Bongeunsa K-Tour',tags:['traveler','K-Tour','GangnamStyle','Bongeunsa']},
-   dist:'3.1km',time:{ko:'40분',en:'40 min'},cal:'135kcal',diff:{ko:'보통',en:'Moderate'},
-   steps:[
-     {icon:'ti-books',ko:'별마당도서관',en:'Starfield Library',note:{ko:'13m 책장',en:'13m bookshelf'}},
-     {icon:'ti-hand-stop',ko:'강남스타일 조각상',en:'Gangnam Style Statue',note:{ko:'K-pop 포토존',en:'K-pop photo spot'}},
-     {icon:'ti-building-church',ko:'봉은사',en:'Bongeunsa Temple',note:{ko:'도심 사찰',en:'City temple'}},
-   ],
-   mapSrc:'https://www.google.com/maps/embed?pb=!1m40!1m12!1m3!1d3165!2d127.058!3d37.512!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m25!3e2!4m5!1s0x357ca41d8b59a3bb%3A0x6b7a45487e4dcd97!2sStarfield+Library!3m2!1d37.510!2d127.060!4m5!1s0x357ca48f40868de5%3A0x48cc34615936b4b3!2sGangnam+Style+Sculpture!3m2!1d37.512!2d127.060!4m5!1s0x357ca4096168ee15%3A0x61c5c99a3c6dc1a!2sBongeunsa+Temple!3m2!1d37.514!2d127.057!5e0!3m2!1sko!2skr!4v1700000000001',
-   gmapUrl:'https://www.google.com/maps/dir/Starfield+Library+COEX/Gangnam+Style+Sculpture/Bongeunsa+Temple/@37.512,127.059,16z/',
-   pois:[
-     {type:'food',icon:'ti-coffee',ko:['별마당 스타벅스','도서관 내부 · 인스타 명소'],en:['Starfield Starbucks','Inside library · Instagram spot']},
-     {type:'rest',icon:'ti-hand-stop',ko:['강남스타일 조각상','24시간 개방 · 음악 재생'],en:['Gangnam Style Statue','Open 24h · Music playing']},
-     {type:'rest',icon:'ti-trees',ko:['봉은사 경내 산책로','5AM-10PM · 무료 입장'],en:['Bongeunsa grounds','5AM-10PM · Free entry']},
-     {type:'toilet',icon:'ti-toilet-paper',ko:['봉은사 화장실','무료 · 경내 위치'],en:['Bongeunsa restroom','Free · Inside temple']},
-   ]},
-  {id:'g2',district:'gangnam',type:'meal',
-   ko:{name:'선정릉 식후 소화 산책',tags:['식후산책','혈당관리','선정릉','직장인']},
-   en:{name:'Post-meal Stroll at Seolleung Tombs',tags:['post-meal','bloodsugar','royaltombs','office']},
-   dist:'1.8km',time:{ko:'22분',en:'22 min'},cal:'80kcal',diff:{ko:'쉬움',en:'Easy'},
-   steps:[
-     {icon:'ti-bowl-spoon',ko:'점심 식사 후 출발',en:'Start after lunch',note:{ko:'선릉역 근처',en:'Near Seolleung stn'}},
-     {icon:'ti-building-arch',ko:'선정릉 입구',en:'Seolleung entrance',note:{ko:'입장료 1,000원',en:'₩1,000 entry'}},
-     {icon:'ti-trees',ko:'소나무 숲길',en:'Pine forest trail',note:{ko:'힐링 완료',en:'Healing done'}},
-   ],
-   mapSrc:'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1582!2d127.052!3d37.508!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca47869a43d71%3A0x2a5a9ddc0c8b4d12!2sSeolleung+and+Jeongneung+Royal+Tombs!5e0!3m2!1sko!2skr!4v1700000000002',
-   gmapUrl:'https://www.google.com/maps/place/Seolleung+and+Jeongneung+Royal+Tombs/@37.5074069,127.0520052,17z/',
-   pois:[
-     {type:'food',icon:'ti-soup',ko:['선릉역 직장인 맛집','테헤란로 인근 · 7~10,000원'],en:['Seolleung lunch spots','Near Teheran-ro · ₩7~10,000']},
-     {type:'rest',icon:'ti-armchair',ko:['선정릉 잔디광장','소나무 그늘 · 벤치 완비'],en:['Seolleung lawn','Pine shade · Benches available']},
-     {type:'toilet',icon:'ti-toilet-paper',ko:['선정릉 공원 화장실','무료 · 접근 용이'],en:['Seolleung restroom','Free · Easy access']},
-   ]},
-  {id:'s1',district:'seongsu',type:'walk',
-   ko:{name:'서울숲→성수 카페거리 감성 산책',tags:['걷기','서울숲','성수카페','감성','힙스터']},
-   en:{name:'Seoul Forest → Seongsu Cafe Street Walk',tags:['walk','SeoulForest','cafe','hipster']},
-   dist:'3.8km',time:{ko:'48분',en:'48 min'},cal:'165kcal',diff:{ko:'쉬움',en:'Easy'},
-   steps:[
-     {icon:'ti-trees',ko:'서울숲 입구',en:'Seoul Forest gate',note:{ko:'무료 입장',en:'Free entry'}},
-     {icon:'ti-deer',ko:'사슴 생태원',en:'Deer eco-zone',note:{ko:'사슴 먹이주기',en:'Feed the deer'}},
-     {icon:'ti-coffee',ko:'성수 카페거리',en:'Seongsu Cafe Street',note:{ko:'어니언·대림창고',en:'Onion · Daelim'}},
-   ],
-   mapSrc:'https://www.google.com/maps/embed?pb=!1m26!1m12!1m3!1d3162!2d127.036!3d37.543!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m20!3e2!4m5!1s0x357ca4d4a8a7f3c5%3A0x8a2f5b9e6c7d8e9f!2sSeoul+Forest!3m2!1d37.544!2d127.038!4m5!1s0x357ca4e1f5b8c7d3%3A0x9b3e6a7f8c5d4e2a!2sCafe+Onion+Seongsu!3m2!1d37.546!2d127.057!4m5!1s0x357ca4b2d3c1e0f7%3A0x4c5d6e7f8a9b0c1d!2sCommon+Ground+Seoul!3m2!1d37.540!2d127.058!5e0!3m2!1sko!2skr!4v1700000000003',
-   gmapUrl:'https://www.google.com/maps/dir/Seoul+Forest/Cafe+Onion+Seongsu/Common+Ground+Seoul/@37.543,127.047,15z/',
-   pois:[
-     {type:'food',icon:'ti-coffee',ko:['카페 어니언 성수','공장 리모델링 감성 카페'],en:['Cafe Onion Seongsu','Factory-converted aesthetic cafe']},
-     {type:'food',icon:'ti-building-store',ko:['커먼 그라운드','컨테이너 쇼핑몰 · 팝업 성지'],en:['Common Ground','Container mall · Popup heaven']},
-     {type:'rest',icon:'ti-trees',ko:['서울숲 잔디 광장','피크닉 · 무료 · 사슴 생태원'],en:['Seoul Forest lawn','Picnic · Free · Deer eco-zone']},
-     {type:'toilet',icon:'ti-toilet-paper',ko:['서울숲 공원 화장실','무료 · 장애인 편의시설'],en:['Seoul Forest restroom','Free · Accessible']},
-   ]},
-  {id:'s2',district:'seongsu',type:'pet',
-   ko:{name:'뚝섬 한강 반려견 산책',tags:['반려동물','강아지','한강','뚝섬']},
-   en:{name:'Ttukseom Han River Pet Walk',tags:['pet','dog','HanRiver','Ttukseom']},
-   dist:'2.5km',time:{ko:'35분',en:'35 min'},cal:'108kcal',diff:{ko:'쉬움',en:'Easy'},
-   steps:[
-     {icon:'ti-paw',ko:'뚝섬역 출발',en:'Start Ttukseom stn',note:{ko:'리드줄 필수',en:'Leash required'}},
-     {icon:'ti-waves',ko:'한강 수변 산책로',en:'Han River path',note:{ko:'탁 트인 강변',en:'Open riverside'}},
-     {icon:'ti-trees',ko:'뚝섬 한강공원',en:'Ttukseom River Park',note:{ko:'잔디 · 수상레저',en:'Lawn · Water sports'}},
-   ],
-   mapSrc:'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3162!2d127.065!3d37.530!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca4a7e5c3b2d1%3A0x1a2b3c4d5e6f7a8b!2sTtukseom+Hangang+Park!5e0!3m2!1sko!2skr!4v1700000000004',
-   gmapUrl:'https://www.google.com/maps/place/Ttukseom+Hangang+Park/@37.530,127.065,16z/',
-   pois:[
-     {type:'food',icon:'ti-coffee',ko:['뚝섬 한강 카페','한강뷰 · 반려동물 동반 가능'],en:['Ttukseom River cafe','Han River view · Pet-friendly']},
-     {type:'rest',icon:'ti-armchair',ko:['뚝섬 반려동물 놀이터','무료 · 대형견 구역 분리'],en:['Ttukseom pet playground','Free · Large/small dog zones']},
-     {type:'toilet',icon:'ti-toilet-paper',ko:['한강 공원 화장실','무료 · 24시간'],en:['Han River Park restroom','Free · 24 hours']},
-   ]},
-  {id:'h1',district:'hongdae',type:'walk',
-   ko:{name:'홍대→경의선숲길→망원동 산책',tags:['걷기','홍대','경의선숲길','망원동','인디음악']},
-   en:{name:'Hongdae→Gyeongui Forest→Mangwon Walk',tags:['walk','Hongdae','GyeonguiForest','Mangwon']},
-   dist:'4.2km',time:{ko:'52분',en:'52 min'},cal:'182kcal',diff:{ko:'쉬움',en:'Easy'},
-   steps:[
-     {icon:'ti-music',ko:'홍대 걷고싶은거리',en:'Hongdae Wanna Walk St.',note:{ko:'버스킹·예술',en:'Busking · Art'}},
-     {icon:'ti-trees',ko:'경의선숲길',en:'Gyeongui Line Forest',note:{ko:'폐선로 공원',en:'Railway park'}},
-     {icon:'ti-building-store',ko:'망원시장',en:'Mangwon Market',note:{ko:'로컬 맛집 성지',en:'Local food heaven'}},
-   ],
-   mapSrc:'https://www.google.com/maps/embed?pb=!1m34!1m12!1m3!1d3162!2d126.923!3d37.556!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m22!3e2!4m5!1s0x357c98f79c29e9d7%3A0x7e8f5a6b4c3d2e1f!2sHongdae+Street!3m2!1d37.556!2d126.924!4m5!1s0x357c98e4a3b2c1d0%3A0x5f6e7d8c9b0a1b2c!2sGyeongui+Line+Forest+Park!3m2!1d37.555!2d126.916!4m5!1s0x357c98a1b2c3d4e5%3A0x6a7b8c9d0e1f2a3b!2sMangwon+Market!3m2!1d37.556!2d126.903!5e0!3m2!1sko!2skr!4v1700000000005',
-   gmapUrl:'https://www.google.com/maps/dir/Hongdae+Street/Gyeongui+Line+Forest+Park/Mangwon+Market/@37.556,126.914,15z/',
-   pois:[
-     {type:'food',icon:'ti-bakery',ko:['망원동 로컬 베이커리','줄 서는 맛집 · 뚱카롱 유명'],en:['Mangwon local bakery','Queued spot · Famous macarons']},
-     {type:'rest',icon:'ti-trees',ko:['경의선숲길 벤치','폐철로 위 공원 · 고양이 많음'],en:['Gyeongui Forest bench','Old railway park · Lots of cats']},
-     {type:'toilet',icon:'ti-toilet-paper',ko:['홍대 공중화장실','무료 · 홍대입구역 인근'],en:['Hongdae public restroom','Free · Near Hongik Univ. stn']},
-   ]},
-  {id:'i1',district:'itaewon',type:'travel',
-   ko:{name:'경리단길→해방촌→남산 힐링 코스',tags:['여행자','이태원','경리단길','해방촌','남산']},
-   en:{name:'Gyeongridangil→Haebangchon→Namsan Hike',tags:['traveler','Itaewon','Gyeongridangil','Namsan']},
-   dist:'4.8km',time:{ko:'65분',en:'65 min'},cal:'240kcal',diff:{ko:'보통',en:'Moderate'},
-   steps:[
-     {icon:'ti-world',ko:'이태원역 출발',en:'Start Itaewon stn',note:{ko:'다국적 거리',en:'Multicultural st.'}},
-     {icon:'ti-building-store',ko:'경리단길',en:'Gyeongridangil',note:{ko:'힙한 레스토랑',en:'Hip restaurants'}},
-     {icon:'ti-mountain',ko:'남산 산책로',en:'Namsan trail',note:{ko:'서울 전경',en:'Seoul panorama'}},
-   ],
-   mapSrc:'https://www.google.com/maps/embed?pb=!1m34!1m12!1m3!1d3163!2d126.994!3d37.534!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m22!3e2!4m5!1s0x357ca1f2a3b4c5d6%3A0x7e8f9a0b1c2d3e4f!2sItaewon+Station!3m2!1d37.534!2d126.994!4m5!1s0x357ca1e4f5d6c7b8%3A0x3a4b5c6d7e8f9a0b!2sGyeongridangil!3m2!1d37.537!2d126.995!4m5!1s0x357ca1d3e4f5a6b7%3A0x8f9a0b1c2d3e4f5a!2sNamsan+Park!3m2!1d37.551!2d126.980!5e0!3m2!1sko!2skr!4v1700000000006',
-   gmapUrl:'https://www.google.com/maps/dir/Itaewon+Station/Gyeongridangil/Namsan+Park/@37.540,126.990,15z/',
-   pois:[
-     {type:'food',icon:'ti-globe',ko:['이태원 다국적 레스토랑','중동·유럽·미국 음식 총집합'],en:['Itaewon world cuisine','Middle East · Europe · American']},
-     {type:'food',icon:'ti-coffee',ko:['해방촌 감성 카페','경리단길 인근 · 루프탑 뷰'],en:['Haebangchon cafe','Near Gyeongridangil · Rooftop view']},
-     {type:'toilet',icon:'ti-toilet-paper',ko:['남산 공원 화장실','무료 · 곳곳에 위치'],en:['Namsan Park restroom','Free · Multiple locations']},
-   ]},
-  {id:'in1',district:'insadong',type:'travel',
-   ko:{name:'인사동→북촌한옥마을→창덕궁 전통 코스',tags:['여행자','인사동','북촌','한옥','창덕궁']},
-   en:{name:'Insadong→Bukchon Hanok→Changdeokgung Tour',tags:['traveler','Insadong','Bukchon','Hanok','Palace']},
-   dist:'3.5km',time:{ko:'50분',en:'50 min'},cal:'152kcal',diff:{ko:'보통',en:'Moderate'},
-   steps:[
-     {icon:'ti-brush',ko:'인사동 거리',en:'Insadong Street',note:{ko:'전통 공예품',en:'Traditional crafts'}},
-     {icon:'ti-home',ko:'북촌한옥마을',en:'Bukchon Hanok Village',note:{ko:'전통 한옥',en:'Traditional houses'}},
-     {icon:'ti-building-arch',ko:'창덕궁',en:'Changdeokgung Palace',note:{ko:'유네스코 세계유산',en:'UNESCO Heritage'}},
-   ],
-   mapSrc:'https://www.google.com/maps/embed?pb=!1m40!1m12!1m3!1d3162!2d126.982!3d37.577!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m25!3e2!4m5!1s0x357cbc8a93a2b3c4%3A0x1d2e3f4a5b6c7d8e!2sInsadong!3m2!1d37.574!2d126.986!4m5!1s0x357cbc7e8f9a0b1c%3A0x2e3f4a5b6c7d8e9f!2sBukchon+Hanok+Village!3m2!1d37.582!2d126.985!4m5!1s0x357cbc6d7e8f9a0b%3A0x3f4a5b6c7d8e9f0a!2sChangdeokgung+Palace!3m2!1d37.579!2d126.991!5e0!3m2!1sko!2skr!4v1700000000007',
-   gmapUrl:'https://www.google.com/maps/dir/Insadong/Bukchon+Hanok+Village/Changdeokgung+Palace/@37.578,126.986,16z/',
-   pois:[
-     {type:'food',icon:'ti-tools-kitchen',ko:['인사동 전통 찻집','쌍화차·식혜 · 전통 다과'],en:['Insadong traditional tea house','Herbal tea · Korean sweets']},
-     {type:'food',icon:'ti-bowl',ko:['북촌 전통 한식당','비빔밥·된장찌개 · 한옥 내부'],en:['Bukchon Korean restaurant','Bibimbap · Doenjang jjigae']},
-     {type:'toilet',icon:'ti-toilet-paper',ko:['북촌 공중화장실','무료 · 북촌로 인근'],en:['Bukchon public restroom','Free · Near Bukchon-ro']},
-   ]},
-  {id:'gw1',district:'gwanghwa',type:'walk',
-   ko:{name:'경복궁→청계천→광화문광장 역사 산책',tags:['걷기','경복궁','청계천','광화문','역사']},
-   en:{name:'Gyeongbokgung→Cheonggyecheon→Gwanghwamun Walk',tags:['walk','Gyeongbokgung','Cheonggyecheon','history']},
-   dist:'4.0km',time:{ko:'50분',en:'50 min'},cal:'174kcal',diff:{ko:'쉬움',en:'Easy'},
-   steps:[
-     {icon:'ti-building-arch',ko:'경복궁 정문',en:'Gyeongbokgung Gate',note:{ko:'근위대 교대식',en:'Guard ceremony'}},
-     {icon:'ti-building',ko:'광화문광장',en:'Gwanghwamun Square',note:{ko:'이순신·세종대왕',en:'YiSun-sin · Sejong'}},
-     {icon:'ti-waves',ko:'청계천 산책로',en:'Cheonggyecheon stream',note:{ko:'도심 속 물길',en:'Urban stream path'}},
-   ],
-   mapSrc:'https://www.google.com/maps/embed?pb=!1m40!1m12!1m3!1d3162!2d126.977!3d37.576!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m25!3e2!4m5!1s0x357cbc6c8a79a421%3A0x3d5c7f9e2b1a0f8d!2sGyeongbokgung+Palace!3m2!1d37.578!2d126.977!4m5!1s0x357cbc74f6b8a3e1%3A0x2a1b0f9e8d7c6b5a!2sGwanghwamun+Square!3m2!1d37.571!2d126.977!4m5!1s0x357ca0e5a6b7c8d9%3A0x9e8f0a1b2c3d4e5f!2sCheonggyecheon+Stream!3m2!1d37.570!2d126.978!5e0!3m2!1sko!2skr!4v1700000000008',
-   gmapUrl:'https://www.google.com/maps/dir/Gyeongbokgung+Palace/Gwanghwamun+Square/Cheonggyecheon+Stream/@37.573,126.977,15z/',
-   pois:[
-     {type:'food',icon:'ti-soup',ko:['광화문 점심 맛집 골목','청계천 인근 · 직장인 맛집'],en:['Gwanghwamun lunch alley','Near stream · Office worker spots']},
-     {type:'rest',icon:'ti-waves',ko:['청계천 수변 벤치','여름 물놀이 · 겨울 빛축제'],en:['Cheonggyecheon streamside bench','Summer water play · Winter lights']},
-     {type:'toilet',icon:'ti-toilet-paper',ko:['광화문광장 화장실','무료 · 지하 위치'],en:['Gwanghwamun Square restroom','Free · Underground']},
-   ]},
-  {id:'j1',district:'jamsil',type:'walk',
-   ko:{name:'석촌호수→롯데월드타워→올림픽공원 산책',tags:['걷기','석촌호수','잠실','롯데타워','올림픽공원','가족']},
-   en:{name:'Seokchon Lake→Lotte World Tower→Olympic Park',tags:['walk','SeokchonLake','Jamsil','LotteTower','family']},
-   dist:'5.0km',time:{ko:'62분',en:'62 min'},cal:'218kcal',diff:{ko:'보통',en:'Moderate'},
-   steps:[
-     {icon:'ti-droplet',ko:'석촌호수 벚꽃길',en:'Seokchon Lake cherry path',note:{ko:'봄 명소',en:'Spring spot'}},
-     {icon:'ti-building-skyscraper',ko:'롯데월드타워',en:'Lotte World Tower',note:{ko:'555m 전망',en:'555m view'}},
-     {icon:'ti-flame',ko:'올림픽공원',en:'Olympic Park',note:{ko:'88 올림픽 성화',en:'88 Olympic torch'}},
-   ],
-   mapSrc:'https://www.google.com/maps/embed?pb=!1m40!1m12!1m3!1d3163!2d127.100!3d37.512!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m25!3e2!4m5!1s0x357ca5b3c4d5e6f7%3A0x8a9b0c1d2e3f4a5b!2sSeokchon+Lake!3m2!1d37.510!2d127.099!4m5!1s0x357ca5a2b3c4d5e6%3A0x7b8c9d0e1f2a3b4c!2sLotte+World+Tower!3m2!1d37.512!2d127.102!4m5!1s0x357ca5c4d5e6f7a8%3A0x6c7d8e9f0a1b2c3d!2sOlympic+Park!3m2!1d37.520!2d127.119!5e0!3m2!1sko!2skr!4v1700000000009',
-   gmapUrl:'https://www.google.com/maps/dir/Seokchon+Lake/Lotte+World+Tower/Olympic+Park+Seoul/@37.514,127.107,15z/',
-   pois:[
-     {type:'food',icon:'ti-cake',ko:['석촌호수 카페거리','호수뷰 · 봄 벚꽃 명소'],en:['Seokchon Lake cafes','Lake view · Spring cherry blossoms']},
-     {type:'rest',icon:'ti-trees',ko:['올림픽공원 잔디밭','무료 · 피크닉 · 야외 조각'],en:['Olympic Park lawn','Free · Picnic · Outdoor sculptures']},
-     {type:'toilet',icon:'ti-toilet-paper',ko:['올림픽공원 화장실','무료 · 공원 곳곳'],en:['Olympic Park restroom','Free · Throughout the park']},
-   ]},
-];
-
-// ── STATE ──────────────────────────────────────
-let lang='ko';
-let activeDistrict='all';
-let activeType='all';
-let selectedId=null;
-let currentView='list';
-
-// ── TYPE INFO ──────────────────────────────────
-const TI={
-  walk:{ko:'걷기',en:'Walk',bg:'#E6F1FB',fg:'#185FA5',icon:'ti-walk'},
-  run:{ko:'달리기',en:'Run',bg:'#E1F5EE',fg:'#085041',icon:'ti-run'},
-  meal:{ko:'식후산책',en:'Post-meal',bg:'#FBEAF0',fg:'#993356',icon:'ti-bowl-spoon'},
-  pet:{ko:'반려동물',en:'Pet',bg:'#FAEEDA',fg:'#854F0B',icon:'ti-paw'},
-  travel:{ko:'여행자',en:'Traveler',bg:'#E1F5EE',fg:'#085041',icon:'ti-plane'},
-};
-const POI_S={
-  food:{bg:'#FAECE7',fg:'#D85A30'},
-  rest:{bg:'#E1F5EE',fg:'#085041'},
-  toilet:{bg:'#E6F1FB',fg:'#185FA5'},
-};
-
-// ── DISTRICT BAR ──────────────────────────────
-function buildDistricts(){
-  const bar=document.getElementById('districtBar');
-  bar.innerHTML=DISTRICTS.map(d=>`
-    <div class="dtab ${d.id===activeDistrict?'active':''}" data-d="${d.id}">
-      <i class="ti ${d.icon}"></i>
-      <span>${d[lang]}</span>
-    </div>`).join('');
-  bar.querySelectorAll('.dtab').forEach(el=>{
-    el.addEventListener('click',()=>{
-      activeDistrict=el.dataset.d;
-      selectedId=null;
-      closeSheet();
-      buildDistricts();
-      renderList();
-    });
-  });
-}
-
-// ── TYPE CHIPS ──────────────────────────────────
-document.getElementById('typeChips').addEventListener('click',e=>{
-  const btn=e.target.closest('[data-type]');
-  if(!btn)return;
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-  btn.classList.add('active');
-  activeType=btn.dataset.type;
-  selectedId=null;
-  closeSheet();
-  renderList();
-});
-
-// ── RENDER LIST ──────────────────────────────────
+let lang='ko',district='all',type='all',sel=null;
+const TI={walk:{ko:'걷기',en:'Walk',bg:'#E6F1FB',fg:'#185FA5',ic:'ti-walk'},run:{ko:'달리기',en:'Run',bg:'#E1F5EE',fg:'#085041',ic:'ti-run'},meal:{ko:'식후산책',en:'Post-meal',bg:'#FBEAF0',fg:'#993356',ic:'ti-bowl-spoon'},pet:{ko:'반려동물',en:'Pet',bg:'#FAEEDA',fg:'#854F0B',ic:'ti-paw'},travel:{ko:'여행자',en:'Traveler',bg:'#E1F5EE',fg:'#085041',ic:'ti-plane'}};
+const PI={food:{bg:'#FAECE7',fg:'#D85A30'},rest:{bg:'#E1F5EE',fg:'#085041'},toilet:{bg:'#E6F1FB',fg:'#185FA5'}};
+const DC={gangnam:'#1D9E75',seongsu:'#185FA5',hongdae:'#993356',itaewon:'#D85A30',insadong:'#BA7517',gwanghwa:'#085041',jamsil:'#7F77DD'};
+function buildD(){document.getElementById('dbar').innerHTML=DIS.map(d=>`<div class="dtab${d.id===district?' on':''}" onclick="setD('${d.id}')"><i class="ti ${d.ic}"></i><span>${d[lang]}</span></div>`).join('')}
+function setD(id){district=id;sel=null;closeSheet();buildD();renderList()}
+document.getElementById('chips').addEventListener('click',e=>{const b=e.target.closest('[data-type]');if(!b)return;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));b.classList.add('on');type=b.dataset.type;sel=null;closeSheet();renderList()});
 function renderList(){
-  const q=document.getElementById('searchInput').value.toLowerCase();
-  const filtered=COURSES.filter(c=>{
-    const dOk=activeDistrict==='all'||c.district===activeDistrict;
-    const tOk=activeType==='all'||c.type===activeType;
+  const q=document.getElementById('si').value.toLowerCase();
+  const f=CS.filter(c=>{
+    const dOk=district==='all'||c.d===district;
+    const tOk=type==='all'||c.t===type;
     const loc=c[lang];
-    const qOk=!q||loc.name.toLowerCase().includes(q)||loc.tags.some(t=>t.toLowerCase().includes(q));
+    const qOk=!q||loc.n.toLowerCase().includes(q)||(loc.tags||[]).some(t=>t.toLowerCase().includes(q));
     return dOk&&tOk&&qOk;
   });
-  const list=document.getElementById('courseList');
-  if(filtered.length===0){
-    list.innerHTML=`<div class="empty"><i class="ti ti-map-search"></i><p>${lang==='ko'?'코스가 없어요. 다른 조건을 선택해보세요.':'No courses found. Try other filters.'}</p></div>`;
-    return;
-  }
-  list.innerHTML=filtered.map(c=>{
-    const ti=TI[c.type];
-    const loc=c[lang];
-    const sel=selectedId===c.id;
-    return`<div class="course-card${sel?' selected':''}" data-id="${c.id}">
-      <div class="card-top">
-        <div class="card-title">${loc.name}</div>
-        <div class="type-badge" style="background:${ti.bg};color:${ti.fg}"><i class="ti ${ti.icon}"></i>${ti[lang]}</div>
-      </div>
-      <div class="card-meta">
-        <span class="meta-item"><i class="ti ti-map-pin"></i>${c.dist}</span>
-        <span class="meta-item"><i class="ti ti-clock"></i>${c.time[lang]}</span>
-        <span class="meta-item"><i class="ti ti-flame"></i>${c.cal}</span>
-        <span class="meta-item"><i class="ti ti-stairs"></i>${c.diff[lang]}</span>
-      </div>
-      <div class="card-tags">${(loc.tags||[]).map(t=>`<span class="tag">#${t}</span>`).join('')}</div>
-    </div>`;
-  }).join('');
-  list.querySelectorAll('.course-card').forEach(el=>{
-    el.addEventListener('click',()=>selectCourse(el.dataset.id));
-  });
+  const el=document.getElementById('clist');
+  if(!f.length){el.innerHTML=`<div style="text-align:center;padding:48px 20px;color:#999"><i class="ti ti-map-search" style="font-size:44px;opacity:.4;display:block;margin-bottom:10px"></i>${lang==='ko'?'코스가 없어요.':'No courses found.'}</div>`;return}
+  el.innerHTML=f.map(c=>{const ti=TI[c.t];const loc=c[lang];return`<div class="card${sel===c.id?' on':''}" onclick="selectC('${c.id}')"><div class="ctop"><div class="cname">${loc.n}</div><div class="cbadge" style="background:${ti.bg};color:${ti.fg}"><i class="ti ${ti.ic}"></i>${ti[lang]}</div></div><div class="cmeta"><span class="mi"><i class="ti ti-map-pin"></i>${c.km}</span><span class="mi"><i class="ti ti-clock"></i>${c.tm[lang]}</span><span class="mi"><i class="ti ti-flame"></i>${c.cal}</span><span class="mi"><i class="ti ti-stairs"></i>${c.dif[lang]}</span></div><div class="ctags">${(loc.tags||[]).map(t=>`<span class="ctag">#${t}</span>`).join('')}</div></div>`}).join('')
 }
-
-// ── SELECT COURSE ──────────────────────────────
-function selectCourse(id){
-  selectedId=id;
-  const c=COURSES.find(x=>x.id===id);
-  const loc=c[lang];
-
-  // 지도 업데이트
-  document.getElementById('mapFrame').src=c.mapSrc;
-  document.getElementById('gmapBtn').classList.add('show');
-
-  // 바텀시트 채우기
-  document.getElementById('sheetTitle').textContent=loc.name;
-  document.getElementById('sheetTags').textContent=(loc.tags||[]).map(t=>'#'+t).join('  ');
-
-  // 경유지
-  const color={gangnam:'#1D9E75',seongsu:'#185FA5',hongdae:'#993356',itaewon:'#D85A30',insadong:'#BA7517',gwanghwa:'#085041',jamsil:'#7F77DD'}[c.district]||'#1D9E75';
-  document.getElementById('sheetSteps').innerHTML=(c.steps||[]).map((s,i)=>`
-    <div class="step-node">
-      <div class="step-circle" style="background:${color}22;border:2px solid ${color}">
-        <i class="ti ${s.icon}" style="color:${color};font-size:18px"></i>
-      </div>
-      <div class="step-label">${s[lang]||s.ko}</div>
-      <div class="step-note">${s.note[lang]}</div>
-    </div>
-    ${i<c.steps.length-1?`<div class="step-line" style="background:${color}"></div>`:''}`).join('');
-
-  // 통계
-  document.getElementById('sheetStats').innerHTML=[
-    ['ti-map-pin',c.dist,lang==='ko'?'거리':'Distance'],
-    ['ti-clock',c.time[lang],lang==='ko'?'시간':'Time'],
-    ['ti-flame',c.cal,lang==='ko'?'칼로리':'Calories'],
-    ['ti-stairs',c.diff[lang],lang==='ko'?'난이도':'Level'],
-  ].map(([ic,v,l])=>`<div class="stat-box"><div class="stat-val">${v}</div><div class="stat-lbl">${l}</div></div>`).join('');
-
-  // POI
-  document.getElementById('sheetPOI').innerHTML=(c.pois||[]).map(p=>{
-    const ps=POI_S[p.type]||POI_S.rest;
-    const [name,desc]=p[lang];
-    return`<div class="poi-item">
-      <div class="poi-icon" style="background:${ps.bg};color:${ps.fg}"><i class="ti ${p.icon}"></i></div>
-      <div><div class="poi-name">${name}</div><div class="poi-desc">${desc}</div></div>
-    </div>`;
-  }).join('');
-
-  document.querySelector('.poi-section-title').textContent=lang==='ko'?'코스 주변 정보':'Along this route';
-  document.querySelector('.btn-sub').textContent=lang==='ko'?'닫기':'Close';
-
-  // 바텀시트 열기
-  document.getElementById('overlay').classList.add('open');
-  document.getElementById('bottomSheet').classList.add('open');
-
-  // 모바일: 지도 뷰로 전환
-  if(window.innerWidth<768) switchView('map');
-
+function selectC(id){
+  sel=id;const c=CS.find(x=>x.id===id);const loc=c[lang];const col=DC[c.d]||'#1D9E75';
+  document.getElementById('mf').src=c.map;
+  document.getElementById('gb').style.display='flex';
+  document.getElementById('shT').textContent=loc.n;
+  document.getElementById('shTg').textContent=(loc.tags||[]).map(t=>'#'+t).join('  ');
+  document.getElementById('shSt').innerHTML=(c.steps||[]).map((s,i)=>`<div class="snode"><div class="scirc" style="background:${col}22;border:2px solid ${col}"><i class="ti ${s.ic}" style="color:${col};font-size:18px"></i></div><div class="slbl">${s[lang]||s.ko}</div><div class="snote">${s.nt[lang]}</div></div>${i<c.steps.length-1?`<div class="sline" style="background:${col}"></div>`:''}`).join('');
+  document.getElementById('shStat').innerHTML=[['ti-map-pin',c.km,lang==='ko'?'거리':'Distance'],['ti-clock',c.tm[lang],lang==='ko'?'시간':'Time'],['ti-flame',c.cal,lang==='ko'?'칼로리':'Calories'],['ti-stairs',c.dif[lang],lang==='ko'?'난이도':'Level']].map(([ic,v,l])=>`<div class="sbox"><div class="sval">${v}</div><div class="slbl2">${l}</div></div>`).join('');
+  document.getElementById('shP').innerHTML=(c.pois||[]).map(p=>{const ps=PI[p.pt]||PI.rest;const[nm,ds]=p[lang];return`<div class="poi"><div class="poiic" style="background:${ps.bg};color:${ps.fg}"><i class="ti ${p.ic}"></i></div><div><div class="poinm">${nm}</div><div class="poids">${ds}</div></div></div>`}).join('');
+  document.querySelector('.poi-ttl').textContent=lang==='ko'?'코스 주변 정보':'Along this route';
+  document.querySelector('.btncls').textContent=lang==='ko'?'닫기':'Close';
+  document.getElementById('ovl').classList.add('on');
+  document.getElementById('sheet').classList.add('on');
+  if(window.innerWidth<768)showScreen('map');
   renderList();
 }
-
-function closeSheet(){
-  selectedId=null;
-  document.getElementById('overlay').classList.remove('open');
-  document.getElementById('bottomSheet').classList.remove('open');
-  document.getElementById('gmapBtn').classList.remove('show');
-  renderList();
+function closeSheet(){sel=null;document.getElementById('ovl').classList.remove('on');document.getElementById('sheet').classList.remove('on');renderList()}
+function openGmap(){if(!sel)return;window.open(CS.find(c=>c.id===sel).gmap,'_blank')}
+function showScreen(v){
+  const ls=document.getElementById('listScreen'),ms=document.getElementById('mapScreen'),vl=document.getElementById('vtL'),vm=document.getElementById('vtM');
+  if(v==='map'){ls.style.display='none';ms.style.display='block';vl.classList.remove('on');vm.classList.add('on')}
+  else{ls.style.display='block';ms.style.display='none';vl.classList.add('on');vm.classList.remove('on')}
 }
-
-function openGmap(){
-  if(!selectedId)return;
-  window.open(COURSES.find(c=>c.id===selectedId).gmapUrl,'_blank');
-}
-
-// ── VIEW SWITCH (모바일) ──────────────────────────
-function switchView(v){
-  currentView=v;
-  const mapV=document.getElementById('mapView');
-  const listV=document.getElementById('courseList').closest('.list-view')||document.getElementById('courseList');
-  const listPanel=document.getElementById('listPanel');
-  const tabList=document.getElementById('tabList');
-  const tabMap=document.getElementById('tabMap');
-
-  if(window.innerWidth>=768)return;
-
-  if(v==='map'){
-    mapV.classList.add('active');
-    listPanel.style.display='none';
-    tabList&&tabList.classList.remove('active');
-    tabMap&&tabMap.classList.add('active');
-    document.querySelectorAll('.nav-item').forEach((n,i)=>{n.classList.toggle('active',i===1)});
-  } else {
-    mapV.classList.remove('active');
-    listPanel.style.display='flex';
-    tabList&&tabList.classList.add('active');
-    tabMap&&tabMap.classList.remove('active');
-    document.querySelectorAll('.nav-item').forEach((n,i)=>{n.classList.toggle('active',i===0)});
-  }
-}
-
-// 초기 모바일 설정
-function initMobile(){
-  if(window.innerWidth<768){
-    document.getElementById('mapView').classList.remove('active');
-    document.getElementById('listPanel').style.display='flex';
-    const tc=document.getElementById('typeChips');
-    const lv=document.querySelector('.list-view');
-    if(tc&&lv){
-      document.getElementById('listPanel').insertBefore(tc,lv);
-    }
-  }
-}
-
-// ── LANGUAGE ──────────────────────────────────
 function toggleLang(){
   lang=lang==='ko'?'en':'ko';
-  applyLang();
+  document.getElementById('lbtn').textContent=lang==='ko'?'EN':'한국어';
+  document.getElementById('si').placeholder=lang==='ko'?'코스·장소·태그 검색...':'Search courses, places, tags...';
+  document.querySelectorAll('[data-ko]').forEach(el=>{el.textContent=el.dataset[lang]||el.dataset.ko});
+  buildD();renderList();if(sel)selectC(sel);
 }
-function switchLang(){toggleLang();}
-function applyLang(){
-  document.getElementById('langBtn').textContent=lang==='ko'?'EN':'한국어';
-  document.getElementById('langNavLabel').textContent=lang==='ko'?'EN':'KO';
-  document.getElementById('searchInput').placeholder=lang==='ko'?'코스·장소·태그 검색...':'Search courses, places, tags...';
-  document.querySelectorAll('[data-ko]').forEach(el=>{
-    el.textContent=el.dataset[lang]||el.dataset.ko;
-  });
-  buildDistricts();
-  renderList();
-  if(selectedId)selectCourse(selectedId);
-}
-
-function focusSearch(){
-  document.getElementById('searchInput').focus();
-  document.querySelectorAll('.nav-item').forEach((n,i)=>{n.classList.toggle('active',i===2)});
-}
-
-// ── SEARCH ──────────────────────────────────────
-document.getElementById('searchInput').addEventListener('input',renderList);
-
-// ── INIT ──────────────────────────────────────
-initMobile();
-buildDistricts();
-applyLang();
+document.getElementById('si').addEventListener('input',renderList);
+buildD();renderList();
 </script>
 </body>
 </html>
