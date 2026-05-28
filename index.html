@@ -2,48 +2,35 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="description" content="서울 걷기·달리기·관광 코스 플랫폼. Draw and share routes in Seoul.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="description" content="서울 걷기·달리기·관광 코스 플랫폼.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Routocity — 서울 코스 플랫폼</title>
-  <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=54abca9e919cf2482bed4c21051bd6a8&autoload=false"></script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{
-      --bg:#f5f4f0;--surface:#fff;--border:#e2e0db;
-      --text:#1a1a1a;--sub:#6b7280;--accent:#2563eb;--accentH:#1d4ed8;
-      --radius:12px;--shadow:0 4px 24px rgba(0,0,0,.12);--hh:52px;
-    }
+    :root{--bg:#f5f4f0;--surface:#fff;--border:#e2e0db;--text:#1a1a1a;--sub:#6b7280;--accent:#2563eb;--accentH:#1d4ed8;--hh:52px;}
     html,body{height:100%;width:100%;overflow:hidden;font-family:'Apple SD Gothic Neo',-apple-system,sans-serif;background:var(--bg);color:var(--text)}
-    /* 헤더 */
     header{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--hh);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:10px}
     .logo{font-size:18px;font-weight:800;letter-spacing:-.5px;flex:1}.logo span{color:var(--accent)}
-    .hbtn{padding:6px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:13px;font-weight:600;color:var(--sub);transition:all .2s}
-    .hbtn:hover{background:var(--bg);color:var(--text)}
+    .hbtn{padding:6px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:13px;font-weight:600;color:var(--sub)}
     #auth-btn{background:var(--accent);color:#fff;border-color:var(--accent);display:flex;align-items:center;gap:6px}
-    #auth-btn:hover{background:var(--accentH)}
     #user-menu{display:none;align-items:center;gap:8px}
     #user-avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;overflow:hidden}
-    /* 지도 */
     #map{position:fixed;top:var(--hh);left:0;right:0;bottom:0}
-    /* 왼쪽 버튼 */
     #controls{position:fixed;top:calc(var(--hh)+12px);left:12px;z-index:50;display:flex;flex-direction:column;gap:8px}
-    .cbtn{display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:10px;background:var(--surface);border:1px solid var(--border);font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.1);transition:all .2s;white-space:nowrap;color:var(--text)}
-    .cbtn:hover{background:var(--bg)}.cbtn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-    /* 하단 그리기 패널 */
-    #dpanel{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:50;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 16px;box-shadow:var(--shadow);flex-direction:column;gap:10px;min-width:320px;max-width:90vw}
+    .cbtn{display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:10px;background:var(--surface);border:1px solid var(--border);font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.1);white-space:nowrap;color:var(--text)}
+    .cbtn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+    #dpanel{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:50;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 16px;box-shadow:0 4px 24px rgba(0,0,0,.12);flex-direction:column;gap:10px;min-width:320px;max-width:90vw}
     .prow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-    .tbtn{padding:6px 14px;border-radius:20px;border:2px solid var(--border);background:transparent;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;color:var(--text)}
+    .tbtn{padding:6px 14px;border-radius:20px;border:2px solid var(--border);background:transparent;font-size:13px;font-weight:600;cursor:pointer;color:var(--text)}
     #tw.on{color:#22c55e;border-color:#22c55e;background:#f0fdf4}
     #tr.on{color:#f97316;border-color:#f97316;background:#fff7ed}
     #tt.on{color:#a855f7;border-color:#a855f7;background:#faf5ff}
-    .abtn{padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;color:var(--text)}
-    .abtn:hover{background:var(--border)}.abtn.d{color:#ef4444}.abtn.d:hover{background:#fef2f2;border-color:#ef4444}
+    .abtn{padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);font-size:12px;font-weight:600;cursor:pointer;color:var(--text)}
+    .abtn.d{color:#ef4444}
     #dinfo{font-size:12px;color:var(--sub);flex:1}
-    #savebtn{display:none;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;background:var(--accent);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(37,99,235,.3);transition:all .2s}
-    #savebtn:hover{background:var(--accentH)}
-    /* 코스 정보 패널 */
-    #cinfo{display:none;position:fixed;top:calc(var(--hh)+12px);right:12px;z-index:50;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:var(--shadow);width:260px}
+    #savebtn{display:none;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;background:var(--accent);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer}
+    #cinfo{display:none;position:fixed;top:calc(var(--hh)+12px);right:12px;z-index:50;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 4px 24px rgba(0,0,0,.12);width:260px}
     #ci-hdr{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
     #ci-icon{font-size:24px;flex-shrink:0}
     #ci-name{font-size:15px;font-weight:700;margin-bottom:3px}
@@ -51,55 +38,46 @@
     #ci-desc{font-size:13px;color:var(--sub);margin-bottom:6px}
     #ci-meta{font-size:12px;color:var(--sub)}
     #ci-close{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--sub);font-size:18px;flex-shrink:0}
-    #donebtn{display:none;width:100%;margin-top:12px;padding:9px;border-radius:8px;background:var(--accent);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
-    #donebtn:hover:not(:disabled){background:var(--accentH)}
+    #donebtn{display:none;width:100%;margin-top:12px;padding:9px;border-radius:8px;background:var(--accent);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer}
     #donebtn:disabled{background:#22c55e;cursor:default}
-    /* 코스 목록 */
-    #clist-panel{position:fixed;top:var(--hh);right:-300px;bottom:0;width:300px;background:var(--surface);border-left:1px solid var(--border);z-index:80;transition:right .3s ease;display:flex;flex-direction:column;box-shadow:-4px 0 20px rgba(0,0,0,.1)}
+    #clist-panel{position:fixed;top:var(--hh);right:-300px;bottom:0;width:300px;background:var(--surface);border-left:1px solid var(--border);z-index:80;transition:right .3s;display:flex;flex-direction:column}
     #clist-panel.open{right:0}
     .lhdr{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
     .lhdr h3{font-size:16px;font-weight:700}
     #clist{flex:1;overflow-y:auto;padding:8px}
-    .ci{display:flex;gap:10px;padding:12px;border-radius:10px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+    .ci{display:flex;gap:10px;padding:12px;border-radius:10px;cursor:pointer;border:1px solid transparent}
     .ci:hover{background:var(--bg)}.ci.done{border-color:#22c55e30;background:#f0fdf4}
     .ciicon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
     .ciname{font-size:14px;font-weight:600;margin-bottom:4px}
     .cimeta{font-size:12px;color:var(--sub);display:flex;align-items:center;gap:5px;flex-wrap:wrap}
-    .cidesc{font-size:12px;color:var(--sub);margin-top:3px}
     .tbadge{padding:2px 7px;border-radius:20px;font-size:11px;font-weight:700}
-    /* 모달 공통 */
     .overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px}
-    .overlay.open{display:flex;animation:fi .2s}
-    @keyframes fi{from{opacity:0}to{opacity:1}}
-    .mbox{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);width:100%;max-width:400px;padding:32px 28px 28px;animation:su .25s;position:relative}
-    @keyframes su{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
-    .mclose{position:absolute;top:16px;right:16px;width:28px;height:28px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:16px}
-    .mtitle{font-size:22px;font-weight:800;margin-bottom:6px;letter-spacing:-.5px}
+    .overlay.open{display:flex}
+    .mbox{background:var(--surface);border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,.12);width:100%;max-width:400px;padding:32px 28px 28px;position:relative}
+    .mclose{position:absolute;top:16px;right:16px;width:28px;height:28px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;font-size:16px;color:var(--sub)}
+    .mtitle{font-size:22px;font-weight:800;margin-bottom:6px}
     .msub{font-size:13px;color:var(--sub);margin-bottom:24px}
-    .gbtn{width:100%;padding:11px 16px;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #dadce0;border-radius:8px;background:#fff;cursor:pointer;font-size:14px;font-weight:500;color:#3c4043;transition:background .15s;margin-bottom:20px}
-    .gbtn:hover{background:#f8f8f8}
-    .div{display:flex;align-items:center;gap:10px;margin-bottom:20px;color:var(--sub);font-size:12px}
-    .div::before,.div::after{content:'';flex:1;height:1px;background:var(--border)}
+    .gbtn{width:100%;padding:11px 16px;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #dadce0;border-radius:8px;background:#fff;cursor:pointer;font-size:14px;font-weight:500;color:#3c4043;margin-bottom:20px}
+    .divider{display:flex;align-items:center;gap:10px;margin-bottom:20px;color:var(--sub);font-size:12px}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
     .field{margin-bottom:14px}
     .field label{display:block;font-size:12px;font-weight:600;color:var(--sub);margin-bottom:5px}
-    .field input,.field textarea{width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--bg);color:var(--text);outline:none;transition:border-color .15s;font-family:inherit}
+    .field input,.field textarea{width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--bg);color:var(--text);outline:none;font-family:inherit}
     .field input:focus,.field textarea:focus{border-color:var(--accent);background:#fff}
     .field textarea{resize:vertical;min-height:72px}
-    .ferr{display:none;font-size:12px;margin-top:12px;padding:8px 12px;border-radius:6px;background:#fef2f2}
-    .pbtn{width:100%;padding:12px;background:var(--accent);color:#fff;font-size:15px;font-weight:700;border:none;border-radius:8px;cursor:pointer;transition:background .15s;margin-top:4px}
-    .pbtn:hover{background:var(--accentH)}.pbtn:disabled{opacity:.6;cursor:not-allowed}
+    .ferr{display:none;font-size:12px;margin-top:12px;padding:8px 12px;border-radius:6px;background:#fef2f2;color:#ef4444}
+    .pbtn{width:100%;padding:12px;background:var(--accent);color:#fff;font-size:15px;font-weight:700;border:none;border-radius:8px;cursor:pointer;margin-top:4px}
+    .pbtn:disabled{opacity:.6;cursor:not-allowed}
     .mfooter{display:flex;align-items:center;justify-content:space-between;margin-top:18px;flex-wrap:wrap;gap:6px}
-    .mfooter a,.mlink{font-size:13px;color:var(--accent);cursor:pointer}.mlink:hover,.mfooter a:hover{text-decoration:underline}
-    /* 토스트 */
+    .mlink{font-size:13px;color:var(--accent);cursor:pointer}
+    .mfooter a{font-size:13px;color:var(--accent);cursor:pointer}
     #toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:100px;font-size:14px;font-weight:500;opacity:0;transition:all .3s;z-index:999;pointer-events:none;white-space:nowrap}
     #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
     @media(max-width:480px){
-      #controls{left:8px;top:calc(var(--hh)+8px)}
-      .cbtn{padding:8px 11px;font-size:12px}
+      #controls{left:8px;top:calc(var(--hh)+8px)}.cbtn{padding:8px 11px;font-size:12px}
       #dpanel{bottom:16px;min-width:0;width:calc(100vw - 32px)}
       #cinfo{right:8px;width:calc(100vw - 16px);top:auto;bottom:120px}
-      #clist-panel{width:85vw;right:-85vw}
-      #clist-panel.open{right:0}
+      #clist-panel{width:85vw;right:-85vw}#clist-panel.open{right:0}
     }
   </style>
 </head>
@@ -114,7 +92,7 @@
   </button>
   <div id="user-menu">
     <div id="user-avatar"></div>
-    <button class="hbtn" id="logout-btn" onclick="doLogout()">로그아웃</button>
+    <button class="hbtn" onclick="doLogout()">로그아웃</button>
   </div>
 </header>
 
@@ -122,13 +100,12 @@
 
 <div id="controls">
   <button class="cbtn" id="draw-btn" onclick="toggleDraw()">✏️ <span id="draw-label">코스 그리기</span></button>
-  <button class="cbtn" onclick="toggleList()">🗺️ <span id="list-label">코스 목록</span></button>
+  <button class="cbtn" onclick="toggleList()">🗺️ 코스 목록</button>
 </div>
 
-<!-- 하단 그리기 패널 -->
 <div id="dpanel">
   <div class="prow">
-    <span style="font-size:13px;font-weight:600;color:var(--sub)" id="type-label">코스 종류</span>
+    <span style="font-size:13px;font-weight:600;color:var(--sub)">코스 종류</span>
     <button class="tbtn on" id="tw" onclick="selType('walk')">🚶 산책</button>
     <button class="tbtn" id="tr" onclick="selType('run')">🏃 러닝</button>
     <button class="tbtn" id="tt" onclick="selType('tour')">📍 관광</button>
@@ -141,14 +118,10 @@
   </div>
 </div>
 
-<!-- 코스 정보 패널 -->
 <div id="cinfo">
   <div id="ci-hdr">
     <span id="ci-icon">🚶</span>
-    <div style="flex:1">
-      <div id="ci-type"></div>
-      <div id="ci-name"></div>
-    </div>
+    <div style="flex:1"><div id="ci-type"></div><div id="ci-name"></div></div>
     <button id="ci-close" onclick="closeInfo()">✕</button>
   </div>
   <div id="ci-desc"></div>
@@ -156,10 +129,9 @@
   <button id="donebtn" onclick="markDone()">🏁 완주 기록하기</button>
 </div>
 
-<!-- 코스 목록 패널 -->
 <div id="clist-panel">
   <div class="lhdr">
-    <h3 id="list-title">코스 목록</h3>
+    <h3>코스 목록</h3>
     <button class="hbtn" onclick="toggleList()">✕</button>
   </div>
   <div id="clist"></div>
@@ -169,12 +141,11 @@
 <div id="auth-overlay" class="overlay" onclick="if(event.target===this)closeAuth()">
   <div class="mbox">
     <button class="mclose" onclick="closeAuth()">✕</button>
-    <!-- 로그인 -->
     <div id="m-login">
       <div class="mtitle">로그인</div>
       <div class="msub">Routocity에 오신 걸 환영해요!</div>
-      <button class="gbtn" onclick="doGoogle()"><svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>Google로 계속하기</button>
-      <div class="div">또는</div>
+      <button class="gbtn" onclick="doGoogle()"><svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg> Google로 계속하기</button>
+      <div class="divider">또는</div>
       <div class="field"><label>이메일</label><input id="l-email" type="email" placeholder="hello@example.com"></div>
       <div class="field"><label>비밀번호</label><input id="l-pw" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
       <div id="l-err" class="ferr"></div>
@@ -184,12 +155,11 @@
         <span style="color:var(--sub);font-size:13px">계정 없으신가요? <a onclick="switchM('signup')">회원가입</a></span>
       </div>
     </div>
-    <!-- 회원가입 -->
     <div id="m-signup" style="display:none">
       <div class="mtitle">회원가입</div>
       <div class="msub">무료로 시작하세요!</div>
-      <button class="gbtn" onclick="doGoogle()"><svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>Google로 계속하기</button>
-      <div class="div">또는</div>
+      <button class="gbtn" onclick="doGoogle()"><svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg> Google로 계속하기</button>
+      <div class="divider">또는</div>
       <div class="field"><label>이메일</label><input id="s-email" type="email" placeholder="hello@example.com"></div>
       <div class="field"><label>비밀번호</label><input id="s-pw" type="password" placeholder="6자 이상"></div>
       <div class="field"><label>비밀번호 확인</label><input id="s-pw2" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignup()"></div>
@@ -200,16 +170,13 @@
         <span style="color:var(--sub);font-size:13px">이미 계정 있으신가요? <a onclick="switchM('login')">로그인</a></span>
       </div>
     </div>
-    <!-- 비밀번호 재설정 -->
     <div id="m-reset" style="display:none">
       <div class="mtitle">비밀번호 재설정</div>
       <div class="msub">이메일로 재설정 링크를 보내드려요.</div>
       <div class="field"><label>이메일</label><input id="r-email" type="email" placeholder="hello@example.com" onkeydown="if(event.key==='Enter')doReset()"></div>
       <div id="r-err" class="ferr"></div>
       <button class="pbtn" onclick="doReset()">재설정 링크 보내기</button>
-      <div class="mfooter" style="justify-content:center">
-        <span class="mlink" onclick="switchM('login')">← 로그인으로</span>
-      </div>
+      <div class="mfooter" style="justify-content:center"><span class="mlink" onclick="switchM('login')">← 로그인으로</span></div>
     </div>
   </div>
 </div>
@@ -228,386 +195,339 @@
 
 <div id="toast"></div>
 
-<script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, sendPasswordResetEmail, updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-  import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp, doc, updateDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+<!-- Firebase (일반 스크립트, CDN UMD 버전) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
-  const app = initializeApp({
-    apiKey:"AIzaSyCzrK-L9ajdRRnqmnRJk40jhrWjTDInJA8",
-    authDomain:"routocity.firebaseapp.com",
-    projectId:"routocity",
-    storageBucket:"routocity.firebasestorage.app",
-    messagingSenderId:"170974446812",
-    appId:"1:170974446812:web:3e79123dc552429de46019"
-  });
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const gp = new GoogleAuthProvider();
+<!-- 카카오맵 SDK (autoload=false) -->
+<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=54abca9e919cf2482bed4c21051bd6a8&autoload=false"></script>
 
-  // ── 상태 ────────────────────────────────────────
-  let lang = localStorage.getItem('rc_lang') || 'ko';
-  let me = null;
-  let map = null;
-  let drawing = false;
-  let path = [];          // {lat,lng}[]
-  let polyline = null;
-  let dmarkers = [];
-  let selType = 'walk';
-  let courses = [];
-  let cplines = [];       // {id, line, sm}[]
-  let activeCourse = null;
+<script>
+// ── Firebase 초기화 ──────────────────────────────
+firebase.initializeApp({
+  apiKey:"AIzaSyCzrK-L9ajdRRnqmnRJk40jhrWjTDInJA8",
+  authDomain:"routocity.firebaseapp.com",
+  projectId:"routocity",
+  storageBucket:"routocity.firebasestorage.app",
+  messagingSenderId:"170974446812",
+  appId:"1:170974446812:web:3e79123dc552429de46019"
+});
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-  const TC = {
-    walk:{label:'산책',en:'Walk',  color:'#22c55e',icon:'🚶'},
-    run: {label:'러닝',en:'Run',   color:'#f97316',icon:'🏃'},
-    tour:{label:'관광',en:'Tour',  color:'#a855f7',icon:'📍'},
-  };
+// ── 상태 ────────────────────────────────────────
+var me = null;
+var map = null;
+var drawing = false;
+var path = [];
+var polyline = null;
+var dmarkers = [];
+var curType = 'walk';
+var courses = [];
+var cplines = [];
+var activeCourse = null;
 
-  // ── 언어 ────────────────────────────────────────
-  window.setLang = l => {
-    lang = l;
-    localStorage.setItem('rc_lang', l);
-    document.getElementById('lang-btn').textContent = lang==='ko'?'EN':'KO';
-    document.getElementById('auth-label').textContent = lang==='ko'?'로그인 / 회원가입':'Login / Sign up';
-    document.getElementById('draw-label').textContent = lang==='ko'?(drawing?'그리기 중단':'코스 그리기'):(drawing?'Stop':'Draw course');
-    document.getElementById('list-label').textContent = lang==='ko'?'코스 목록':'Courses';
-    document.getElementById('list-title').textContent = lang==='ko'?'코스 목록':'Courses';
-    document.getElementById('type-label').textContent = lang==='ko'?'코스 종류':'Type';
-  };
+var TC = {
+  walk:{label:'산책',color:'#22c55e',icon:'🚶'},
+  run: {label:'러닝',color:'#f97316',icon:'🏃'},
+  tour:{label:'관광',color:'#a855f7',icon:'📍'}
+};
 
-  // ── Auth ────────────────────────────────────────
-  onAuthStateChanged(auth, u => {
-    me = u;
-    const ab = document.getElementById('auth-btn');
-    const um = document.getElementById('user-menu');
-    const av = document.getElementById('user-avatar');
-    const sb = document.getElementById('savebtn');
-    if (u) {
-      ab.style.display = 'none'; um.style.display = 'flex';
-      av.textContent = u.photoURL ? '' : (u.displayName||u.email||'?')[0].toUpperCase();
-      if (u.photoURL) { av.style.backgroundImage=`url(${u.photoURL})`; av.style.backgroundSize='cover'; }
-      if (sb && drawing) sb.style.display = 'flex';
-    } else {
-      ab.style.display = 'flex'; um.style.display = 'none';
-      if (sb) sb.style.display = 'none';
-    }
-    renderList();
-  });
-
-  window.openAuth = m => { document.getElementById('auth-overlay').classList.add('open'); switchM(m); };
-  window.closeAuth = () => { document.getElementById('auth-overlay').classList.remove('open'); clearErrs(); };
-  window.switchM = m => {
-    ['login','signup','reset'].forEach(k => document.getElementById('m-'+k).style.display = k===m?'block':'none');
-    clearErrs();
-  };
-  window.doLogin = async () => {
-    clearErrs();
-    try {
-      await signInWithEmailAndPassword(auth, v('l-email'), v('l-pw'));
-      closeAuth(); toast(lang==='ko'?'로그인 성공! 😊':'Welcome back! 😊');
-    } catch(e) { err('l-err', fErr(e.code)); }
-  };
-  window.doSignup = async () => {
-    clearErrs();
-    const pw=v('s-pw'), pw2=v('s-pw2'), nm=v('s-name');
-    if(pw.length<6){err('s-err','비밀번호는 6자 이상이어야 해요.');return;}
-    if(pw!==pw2){err('s-err','비밀번호가 일치하지 않아요.');return;}
-    try {
-      const c = await createUserWithEmailAndPassword(auth, v('s-email'), pw);
-      if(nm) await updateProfile(c.user, {displayName:nm});
-      closeAuth(); toast('가입 완료! 환영해요 😊');
-    } catch(e){ err('s-err',fErr(e.code)); }
-  };
-  window.doGoogle = async () => {
-    clearErrs();
-    try { await signInWithPopup(auth,gp); closeAuth(); toast('로그인 성공! 😊'); }
-    catch(e){ if(e.code!=='auth/popup-closed-by-user'){err('l-err',fErr(e.code));err('s-err',fErr(e.code));} }
-  };
-  window.doReset = async () => {
-    clearErrs();
-    try { await sendPasswordResetEmail(auth, v('r-email')); err('r-err','재설정 링크를 이메일로 보냈어요!',true); }
-    catch(e){ err('r-err',fErr(e.code)); }
-  };
-  window.doLogout = async () => { await signOut(auth); toast('로그아웃 됐어요.'); };
-
-  function fErr(c){
-    return ({
-      'auth/email-already-in-use':'이미 사용 중인 이메일이에요.',
-      'auth/invalid-email':'올바른 이메일을 입력해주세요.',
-      'auth/wrong-password':'이메일 또는 비밀번호가 틀렸어요.',
-      'auth/user-not-found':'등록된 이메일이 없어요.',
-      'auth/invalid-credential':'이메일 또는 비밀번호가 틀렸어요.',
-      'auth/too-many-requests':'잠시 후 다시 시도해주세요.',
-      'auth/weak-password':'비밀번호는 6자 이상이어야 해요.',
-    })[c] || c;
+// ── Auth ─────────────────────────────────────────
+auth.onAuthStateChanged(function(u){
+  me = u;
+  var ab=document.getElementById('auth-btn');
+  var um=document.getElementById('user-menu');
+  var av=document.getElementById('user-avatar');
+  var sb=document.getElementById('savebtn');
+  if(u){
+    ab.style.display='none'; um.style.display='flex';
+    av.textContent = u.photoURL ? '' : (u.displayName||u.email||'?')[0].toUpperCase();
+    if(u.photoURL){av.style.backgroundImage='url('+u.photoURL+')';av.style.backgroundSize='cover';}
+    if(drawing) sb.style.display='flex';
+  } else {
+    ab.style.display='flex'; um.style.display='none';
+    sb.style.display='none';
   }
-  function v(id){ return document.getElementById(id)?.value.trim()||''; }
-  function err(id,msg,ok=false){
-    const e=document.getElementById(id);
-    if(!e)return; e.textContent=msg; e.style.color=ok?'#22c55e':'#ef4444'; e.style.display='block';
-  }
-  function clearErrs(){ ['l-err','s-err','r-err'].forEach(id=>{const e=document.getElementById(id);if(e){e.textContent='';e.style.display='none';}}); }
+  renderList();
+});
 
-  // ── 지도 초기화 ─────────────────────────────────
-  function initMap(){
-    map = new kakao.maps.Map(document.getElementById('map'), {
-      center: new kakao.maps.LatLng(37.5665, 126.9780),
-      level: 5
-    });
-    kakao.maps.event.addListener(map, 'click', e => {
-      if (!drawing) return;
-      const ll = e.latLng;
-      path.push({lat:ll.getLat(), lng:ll.getLng()});
-      addDot(ll);
-      redrawLine();
-      updateInfo();
-    });
+function openAuth(m){ document.getElementById('auth-overlay').classList.add('open'); switchM(m); }
+function closeAuth(){ document.getElementById('auth-overlay').classList.remove('open'); clearErrs(); }
+function switchM(m){
+  ['login','signup','reset'].forEach(function(k){ document.getElementById('m-'+k).style.display = k===m?'block':'none'; });
+  clearErrs();
+}
+function doLogin(){
+  clearErrs();
+  auth.signInWithEmailAndPassword(gv('l-email'), gv('l-pw'))
+    .then(function(){ closeAuth(); toast('로그인 성공! 😊'); })
+    .catch(function(e){ showErr('l-err', fErr(e.code)); });
+}
+function doSignup(){
+  clearErrs();
+  var pw=gv('s-pw'), pw2=gv('s-pw2'), nm=gv('s-name');
+  if(pw.length<6){showErr('s-err','비밀번호는 6자 이상이어야 해요.');return;}
+  if(pw!==pw2){showErr('s-err','비밀번호가 일치하지 않아요.');return;}
+  auth.createUserWithEmailAndPassword(gv('s-email'), pw)
+    .then(function(c){ if(nm) return c.user.updateProfile({displayName:nm}); })
+    .then(function(){ closeAuth(); toast('가입 완료! 환영해요 😊'); })
+    .catch(function(e){ showErr('s-err', fErr(e.code)); });
+}
+function doGoogle(){
+  clearErrs();
+  var gp = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(gp)
+    .then(function(){ closeAuth(); toast('로그인 성공! 😊'); })
+    .catch(function(e){ if(e.code!=='auth/popup-closed-by-user') showErr('l-err', fErr(e.code)); });
+}
+function doReset(){
+  clearErrs();
+  auth.sendPasswordResetEmail(gv('r-email'))
+    .then(function(){ showErr('r-err','재설정 링크를 이메일로 보냈어요!', true); })
+    .catch(function(e){ showErr('r-err', fErr(e.code)); });
+}
+function doLogout(){ auth.signOut().then(function(){ toast('로그아웃 됐어요.'); }); }
+
+function fErr(c){
+  var m={'auth/email-already-in-use':'이미 사용 중인 이메일이에요.','auth/invalid-email':'올바른 이메일을 입력해주세요.','auth/wrong-password':'이메일 또는 비밀번호가 틀렸어요.','auth/user-not-found':'등록된 이메일이 없어요.','auth/invalid-credential':'이메일 또는 비밀번호가 틀렸어요.','auth/too-many-requests':'잠시 후 다시 시도해주세요.'};
+  return m[c]||c;
+}
+function gv(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
+function showErr(id,msg,ok){
+  var e=document.getElementById(id);
+  if(!e)return; e.textContent=msg; e.style.color=ok?'#22c55e':'#ef4444'; e.style.display='block';
+}
+function clearErrs(){ ['l-err','s-err','r-err'].forEach(function(id){ var e=document.getElementById(id); if(e){e.textContent='';e.style.display='none';} }); }
+
+// ── 지도 초기화 ──────────────────────────────────
+function initMap(){
+  map = new kakao.maps.Map(document.getElementById('map'),{
+    center: new kakao.maps.LatLng(37.5665,126.9780), level:5
+  });
+  kakao.maps.event.addListener(map,'click',function(e){
+    if(!drawing) return;
+    var ll=e.latLng;
+    path.push({lat:ll.getLat(),lng:ll.getLng()});
+    addDot(ll); redrawLine(); updateInfo();
+  });
+  loadCourses();
+}
+
+// ── 그리기 ───────────────────────────────────────
+function toggleDraw(){ drawing ? stopDraw() : startDraw(); }
+
+function startDraw(){
+  drawing=true; path=[]; clearLayer();
+  document.getElementById('draw-btn').classList.add('on');
+  document.getElementById('draw-label').textContent='그리기 중단';
+  document.getElementById('dpanel').style.display='flex';
+  if(me) document.getElementById('savebtn').style.display='flex';
+  map.setCursor('crosshair');
+  toast('지도를 클릭해서 코스를 그려보세요!');
+}
+function stopDraw(){
+  drawing=false;
+  document.getElementById('draw-btn').classList.remove('on');
+  document.getElementById('draw-label').textContent='코스 그리기';
+  map.setCursor('');
+  if(path.length<2){clearLayer();document.getElementById('dpanel').style.display='none';}
+  document.getElementById('savebtn').style.display='none';
+}
+
+function addDot(ll){
+  var cfg=TC[curType];
+  var svg=btoa('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><circle cx="5" cy="5" r="4" fill="'+cfg.color+'" stroke="white" stroke-width="1"/></svg>');
+  var m=new kakao.maps.Marker({position:ll,map:map,image:new kakao.maps.MarkerImage('data:image/svg+xml;base64,'+svg,new kakao.maps.Size(10,10),{offset:new kakao.maps.Point(5,5)})});
+  dmarkers.push(m);
+}
+
+function redrawLine(){
+  if(polyline) polyline.setMap(null);
+  if(path.length<2) return;
+  polyline=new kakao.maps.Polyline({path:path.map(function(p){return new kakao.maps.LatLng(p.lat,p.lng);}),strokeWeight:5,strokeColor:TC[curType].color,strokeOpacity:.9,strokeStyle:'solid',map:map});
+}
+
+function clearLayer(){
+  if(polyline){polyline.setMap(null);polyline=null;}
+  dmarkers.forEach(function(m){m.setMap(null);}); dmarkers=[]; path=[];
+}
+
+function updateInfo(){
+  var d=calcDist(path);
+  document.getElementById('dinfo').textContent=path.length+'개 포인트 · '+(d<1?Math.round(d*1000)+'m':d.toFixed(1)+'km');
+}
+
+function calcDist(pts){
+  var d=0;
+  for(var i=1;i<pts.length;i++){
+    var R=6371,dLat=(pts[i].lat-pts[i-1].lat)*Math.PI/180,dLng=(pts[i].lng-pts[i-1].lng)*Math.PI/180;
+    var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(pts[i-1].lat*Math.PI/180)*Math.cos(pts[i].lat*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+    d+=R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+  } return d;
+}
+
+function selType(t){
+  curType=t;
+  ['walk','run','tour'].forEach(function(k){document.getElementById('t'+k[0]).classList.remove('on');});
+  document.getElementById('t'+t[0]).classList.add('on');
+  var pts=path.slice(); clearLayer(); path=pts;
+  pts.forEach(function(p){addDot(new kakao.maps.LatLng(p.lat,p.lng));});
+  redrawLine();
+}
+
+function undoLast(){
+  if(!path.length) return;
+  path.pop();
+  var m=dmarkers.pop(); if(m)m.setMap(null);
+  redrawLine(); updateInfo();
+}
+
+function clearAll(){
+  clearLayer();
+  document.getElementById('dinfo').textContent='';
+  if(!drawing) document.getElementById('dpanel').style.display='none';
+}
+
+// ── 저장 ─────────────────────────────────────────
+function openSave(){
+  if(!me){openAuth('login');return;}
+  if(path.length<2){toast('먼저 지도에 코스를 그려주세요!');return;}
+  document.getElementById('cn-input').value='';
+  document.getElementById('cd-input').value='';
+  document.getElementById('save-overlay').classList.add('open');
+}
+function closeSave(){ document.getElementById('save-overlay').classList.remove('open'); }
+
+function doSave(){
+  if(!me) return;
+  var name=document.getElementById('cn-input').value.trim();
+  if(!name){toast('코스 이름을 입력해주세요!');return;}
+  var desc=document.getElementById('cd-input').value.trim();
+  var btn=document.getElementById('save-confirm');
+  btn.disabled=true; btn.textContent='저장 중...';
+  db.collection('courses').add({
+    name:name, desc:desc, type:curType,
+    path:path, distance:calcDist(path),
+    userId:me.uid,
+    userName:me.displayName||me.email.split('@')[0],
+    createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+    completedBy:[]
+  }).then(function(){
+    closeSave(); stopDraw(); clearLayer();
+    document.getElementById('dpanel').style.display='none';
+    toast('코스가 저장됐어요! 🎉');
     loadCourses();
-  }
+  }).catch(function(e){ toast('저장 실패: '+e.message); })
+  .finally(function(){ btn.disabled=false; btn.textContent='저장하기'; });
+}
 
-  // ── 그리기 ──────────────────────────────────────
-  window.toggleDraw = () => drawing ? stopDraw() : startDraw();
-
-  function startDraw(){
-    drawing=true; path=[]; clearLayer();
-    document.getElementById('draw-btn').classList.add('on');
-    document.getElementById('draw-label').textContent = lang==='ko'?'그리기 중단':'Stop drawing';
-    document.getElementById('dpanel').style.display='flex';
-    if(me) document.getElementById('savebtn').style.display='flex';
-    map.setCursor('crosshair');
-    toast(lang==='ko'?'지도를 클릭해서 코스를 그려보세요!':'Click map to draw your course!');
-  }
-  function stopDraw(){
-    drawing=false;
-    document.getElementById('draw-btn').classList.remove('on');
-    document.getElementById('draw-label').textContent = lang==='ko'?'코스 그리기':'Draw course';
-    map.setCursor('');
-    if(path.length<2){ clearLayer(); document.getElementById('dpanel').style.display='none'; }
-    document.getElementById('savebtn').style.display='none';
-  }
-
-  function addDot(ll){
-    const cfg = TC[selType];
-    const svg = btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><circle cx="5" cy="5" r="4" fill="${cfg.color}" stroke="white" stroke-width="1"/></svg>`);
-    const m = new kakao.maps.Marker({
-      position:ll, map,
-      image:new kakao.maps.MarkerImage('data:image/svg+xml;base64,'+svg, new kakao.maps.Size(10,10), {offset:new kakao.maps.Point(5,5)})
-    });
-    dmarkers.push(m);
-  }
-
-  function redrawLine(){
-    if(polyline) polyline.setMap(null);
-    if(path.length<2) return;
-    polyline = new kakao.maps.Polyline({
-      path: path.map(p=>new kakao.maps.LatLng(p.lat,p.lng)),
-      strokeWeight:5, strokeColor:TC[selType].color,
-      strokeOpacity:.9, strokeStyle:'solid', map
-    });
-  }
-
-  function clearLayer(){
-    if(polyline){polyline.setMap(null);polyline=null;}
-    dmarkers.forEach(m=>m.setMap(null)); dmarkers=[]; path=[];
-  }
-
-  function updateInfo(){
-    const d = dist(path);
-    document.getElementById('dinfo').textContent = `${path.length}개 포인트 · ${d<1?Math.round(d*1000)+'m':d.toFixed(1)+'km'}`;
-  }
-
-  function dist(pts){
-    let d=0;
-    for(let i=1;i<pts.length;i++){
-      const R=6371, dLat=(pts[i].lat-pts[i-1].lat)*Math.PI/180, dLng=(pts[i].lng-pts[i-1].lng)*Math.PI/180;
-      const a=Math.sin(dLat/2)**2+Math.cos(pts[i-1].lat*Math.PI/180)*Math.cos(pts[i].lat*Math.PI/180)*Math.sin(dLng/2)**2;
-      d+=R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-    }
-    return d;
-  }
-
-  window.selType = t => {
-    selType=t;
-    ['walk','run','tour'].forEach(k=>document.getElementById('t'+k[0]).classList.remove('on'));
-    document.getElementById('t'+t[0]).classList.add('on');
-    redrawLine();
-    const pts=[...path]; clearLayer(); path=pts;
-    pts.forEach(p=>addDot(new kakao.maps.LatLng(p.lat,p.lng)));
-    redrawLine();
-  };
-
-  window.undoLast = () => {
-    if(!path.length) return;
-    path.pop();
-    const m=dmarkers.pop(); if(m)m.setMap(null);
-    redrawLine(); updateInfo();
-  };
-
-  window.clearAll = () => {
-    clearLayer();
-    document.getElementById('dinfo').textContent='';
-    if(!drawing) document.getElementById('dpanel').style.display='none';
-  };
-
-  // ── 저장 ────────────────────────────────────────
-  window.openSave = () => {
-    if(!me){openAuth('login');return;}
-    if(path.length<2){toast('먼저 지도에 코스를 그려주세요!');return;}
-    document.getElementById('cn-input').value='';
-    document.getElementById('cd-input').value='';
-    document.getElementById('save-overlay').classList.add('open');
-  };
-  window.closeSave = () => document.getElementById('save-overlay').classList.remove('open');
-
-  window.doSave = async () => {
-    if(!me) return;
-    const name = document.getElementById('cn-input').value.trim();
-    if(!name){toast('코스 이름을 입력해주세요!');return;}
-    const desc = document.getElementById('cd-input').value.trim();
-    const btn = document.getElementById('save-confirm');
-    btn.disabled=true; btn.textContent='저장 중...';
-    try {
-      await addDoc(collection(db,'courses'), {
-        name, desc, type:selType,
-        path, distance:dist(path),
-        userId:me.uid,
-        userName:me.displayName||me.email.split('@')[0],
-        createdAt:serverTimestamp(),
-        completedBy:[]
-      });
-      closeSave(); stopDraw(); clearLayer();
-      document.getElementById('dpanel').style.display='none';
-      toast('코스가 저장됐어요! 🎉');
-      loadCourses();
-    } catch(e){ toast('저장 실패: '+e.message); }
-    finally{ btn.disabled=false; btn.textContent='저장하기'; }
-  };
-
-  // ── 코스 불러오기 ────────────────────────────────
-  async function loadCourses(){
-    try {
-      const snap = await getDocs(query(collection(db,'courses'), orderBy('createdAt','desc')));
-      courses=[]; snap.forEach(d=>courses.push({id:d.id,...d.data()}));
+// ── 코스 불러오기 ────────────────────────────────
+function loadCourses(){
+  db.collection('courses').orderBy('createdAt','desc').get()
+    .then(function(snap){
+      courses=[];
+      snap.forEach(function(d){courses.push(Object.assign({id:d.id},d.data()));});
       renderOnMap(); renderList();
-    } catch(e){ console.error(e); }
-  }
+    }).catch(function(e){console.error('코스 로드 실패:',e);});
+}
 
-  function renderOnMap(){
-    cplines.forEach(p=>{p.line.setMap(null);if(p.sm)p.sm.setMap(null);});
-    cplines=[];
-    courses.forEach(c=>{
-      if(!c.path||c.path.length<2) return;
-      const cfg=TC[c.type]||TC.walk;
-      const pts=c.path.map(p=>new kakao.maps.LatLng(p.lat,p.lng));
-      const isDone=me&&(c.completedBy||[]).includes(me.uid);
-
-      const line=new kakao.maps.Polyline({
-        path:pts, strokeWeight:isDone?7:5,
-        strokeColor:isDone?'#faff00':cfg.color,
-        strokeOpacity:isDone?1:.75, strokeStyle:'solid', map
-      });
-
-      const svg=btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="28" height="34" viewBox="0 0 28 34"><path d="M14 0C6.27 0 0 6.27 0 14c0 10.5 14 20 14 20s14-9.5 14-20C28 6.27 21.73 0 14 0z" fill="${isDone?'#faff00':cfg.color}"/><text x="14" y="20" text-anchor="middle" font-size="14">${cfg.icon}</text></svg>`);
-      const sm=new kakao.maps.Marker({
-        position:pts[0], map, title:c.name,
-        image:new kakao.maps.MarkerImage('data:image/svg+xml;base64,'+svg, new kakao.maps.Size(28,34),{offset:new kakao.maps.Point(14,34)})
-      });
-      kakao.maps.event.addListener(sm,'click',()=>showInfo(c));
-      kakao.maps.event.addListener(line,'click',()=>showInfo(c));
-      cplines.push({id:c.id,line,sm});
-    });
-  }
-
-  function showInfo(c){
-    activeCourse=c;
-    const cfg=TC[c.type]||TC.walk;
-    const d=c.distance||0;
-    const ds=d<1?Math.round(d*1000)+'m':d.toFixed(1)+'km';
-    document.getElementById('ci-icon').textContent=cfg.icon;
-    document.getElementById('ci-type').textContent=cfg.label;
-    document.getElementById('ci-type').style.color=cfg.color;
-    document.getElementById('ci-name').textContent=c.name;
-    document.getElementById('ci-desc').textContent=c.desc||'';
-    document.getElementById('ci-meta').textContent=`${ds} · ${c.userName} · 완주 ${(c.completedBy||[]).length}명`;
-    const db2=document.getElementById('donebtn');
-    if(me){
-      const done=(c.completedBy||[]).includes(me.uid);
-      db2.style.display='block';
-      db2.textContent=done?'✅ 완주 완료!':'🏁 완주 기록하기';
-      db2.disabled=done;
-    } else { db2.style.display='none'; }
-    document.getElementById('cinfo').style.display='block';
-  }
-  window.closeInfo = () => { document.getElementById('cinfo').style.display='none'; activeCourse=null; };
-
-  window.markDone = async () => {
-    if(!me||!activeCourse) return;
-    try {
-      await updateDoc(doc(db,'courses',activeCourse.id), {completedBy:arrayUnion(me.uid)});
-      toast('완주 기록 완료! 🎉 형광색으로 표시됐어요!');
-      const pl=cplines.find(p=>p.id===activeCourse.id);
-      if(pl){ pl.line.setOptions({strokeColor:'#faff00',strokeWeight:7,strokeOpacity:1}); }
-      document.getElementById('donebtn').textContent='✅ 완주 완료!';
-      document.getElementById('donebtn').disabled=true;
-      loadCourses();
-    } catch(e){ toast('오류: '+e.message); }
-  };
-
-  // ── 목록 ────────────────────────────────────────
-  window.toggleList = () => document.getElementById('clist-panel').classList.toggle('open');
-
-  function renderList(){
-    const el=document.getElementById('clist');
-    if(!el) return;
-    if(!courses.length){
-      el.innerHTML='<div style="text-align:center;color:var(--sub);padding:32px 16px;font-size:14px">아직 코스가 없어요.<br>첫 코스를 만들어보세요!</div>';
-      return;
-    }
-    el.innerHTML=courses.map(c=>{
-      const cfg=TC[c.type]||TC.walk;
-      const d=c.distance||0;
-      const ds=d<1?Math.round(d*1000)+'m':d.toFixed(1)+'km';
-      const done=me&&(c.completedBy||[]).includes(me.uid);
-      return `<div class="ci ${done?'done':''}" onclick="focusCourse('${c.id}')">
-        <div class="ciicon" style="background:${cfg.color}20;color:${cfg.color}">${cfg.icon}</div>
-        <div style="flex:1;min-width:0">
-          <div class="ciname">${c.name}${done?' ✅':''}</div>
-          <div class="cimeta">
-            <span class="tbadge" style="background:${cfg.color}20;color:${cfg.color}">${cfg.label}</span>
-            ${ds} · ${c.userName} · 완주 ${(c.completedBy||[]).length}명
-          </div>
-          ${c.desc?`<div class="cidesc">${c.desc}</div>`:''}
-        </div>
-      </div>`;
-    }).join('');
-  }
-
-  window.focusCourse = id => {
-    const c=courses.find(x=>x.id===id);
-    if(!c||!c.path?.length) return;
-    map.setCenter(new kakao.maps.LatLng(c.path[0].lat,c.path[0].lng));
-    map.setLevel(4);
-    document.getElementById('clist-panel').classList.remove('open');
-    showInfo(c);
-  };
-
-  // ── 토스트 ──────────────────────────────────────
-  function toast(msg){
-    const t=document.getElementById('toast');
-    t.textContent=msg; t.classList.add('show');
-    setTimeout(()=>t.classList.remove('show'),3000);
-  }
-
-  // ── 언어 버튼 ────────────────────────────────────
-  document.getElementById('lang-btn').addEventListener('click', () => {
-    lang=lang==='ko'?'en':'ko';
-    localStorage.setItem('rc_lang',lang);
-    setLang(lang);
+function renderOnMap(){
+  cplines.forEach(function(p){p.line.setMap(null);if(p.sm)p.sm.setMap(null);});
+  cplines=[];
+  courses.forEach(function(c){
+    if(!c.path||c.path.length<2) return;
+    var cfg=TC[c.type]||TC.walk;
+    var pts=c.path.map(function(p){return new kakao.maps.LatLng(p.lat,p.lng);});
+    var isDone=me&&(c.completedBy||[]).indexOf(me.uid)>=0;
+    var line=new kakao.maps.Polyline({path:pts,strokeWeight:isDone?7:5,strokeColor:isDone?'#faff00':cfg.color,strokeOpacity:isDone?1:.75,strokeStyle:'solid',map:map});
+    var svg=btoa('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="34" viewBox="0 0 28 34"><path d="M14 0C6.27 0 0 6.27 0 14c0 10.5 14 20 14 20s14-9.5 14-20C28 6.27 21.73 0 14 0z" fill="'+(isDone?'#faff00':cfg.color)+'"/><text x="14" y="20" text-anchor="middle" font-size="14">'+cfg.icon+'</text></svg>');
+    var sm=new kakao.maps.Marker({position:pts[0],map:map,title:c.name,image:new kakao.maps.MarkerImage('data:image/svg+xml;base64,'+svg,new kakao.maps.Size(28,34),{offset:new kakao.maps.Point(14,34)})});
+    kakao.maps.event.addListener(sm,'click',function(){showInfo(c);});
+    kakao.maps.event.addListener(line,'click',function(){showInfo(c);});
+    cplines.push({id:c.id,line:line,sm:sm});
   });
+}
 
-  // ── 카카오맵 준비되면 초기화 ────────────────────
-  window.addEventListener("load", () => { kakao.maps.load(initMap); });
+function showInfo(c){
+  activeCourse=c;
+  var cfg=TC[c.type]||TC.walk;
+  var d=c.distance||0;
+  var ds=d<1?Math.round(d*1000)+'m':d.toFixed(1)+'km';
+  document.getElementById('ci-icon').textContent=cfg.icon;
+  document.getElementById('ci-type').textContent=cfg.label;
+  document.getElementById('ci-type').style.color=cfg.color;
+  document.getElementById('ci-name').textContent=c.name;
+  document.getElementById('ci-desc').textContent=c.desc||'';
+  document.getElementById('ci-meta').textContent=ds+' · '+c.userName+' · 완주 '+(c.completedBy||[]).length+'명';
+  var db2=document.getElementById('donebtn');
+  if(me){
+    var done=(c.completedBy||[]).indexOf(me.uid)>=0;
+    db2.style.display='block'; db2.textContent=done?'✅ 완주 완료!':'🏁 완주 기록하기'; db2.disabled=done;
+  } else { db2.style.display='none'; }
+  document.getElementById('cinfo').style.display='block';
+}
+function closeInfo(){ document.getElementById('cinfo').style.display='none'; activeCourse=null; }
+
+function markDone(){
+  if(!me||!activeCourse) return;
+  db.collection('courses').doc(activeCourse.id).update({
+    completedBy: firebase.firestore.FieldValue.arrayUnion(me.uid)
+  }).then(function(){
+    toast('완주 기록 완료! 🎉 형광색으로 표시됐어요!');
+    var pl=cplines.find(function(p){return p.id===activeCourse.id;});
+    if(pl){pl.line.setOptions({strokeColor:'#faff00',strokeWeight:7,strokeOpacity:1});}
+    document.getElementById('donebtn').textContent='✅ 완주 완료!';
+    document.getElementById('donebtn').disabled=true;
+    loadCourses();
+  }).catch(function(e){toast('오류: '+e.message);});
+}
+
+// ── 목록 ─────────────────────────────────────────
+function toggleList(){ document.getElementById('clist-panel').classList.toggle('open'); }
+
+function renderList(){
+  var el=document.getElementById('clist');
+  if(!el) return;
+  if(!courses.length){
+    el.innerHTML='<div style="text-align:center;color:var(--sub);padding:32px 16px;font-size:14px">아직 코스가 없어요.<br>첫 코스를 만들어보세요!</div>';
+    return;
+  }
+  el.innerHTML=courses.map(function(c){
+    var cfg=TC[c.type]||TC.walk;
+    var d=c.distance||0;
+    var ds=d<1?Math.round(d*1000)+'m':d.toFixed(1)+'km';
+    var done=me&&(c.completedBy||[]).indexOf(me.uid)>=0;
+    return '<div class="ci'+(done?' done':'')+'" onclick="focusCourse(\''+c.id+'\')"><div class="ciicon" style="background:'+cfg.color+'20;color:'+cfg.color+'">'+cfg.icon+'</div><div style="flex:1;min-width:0"><div class="ciname">'+c.name+(done?' ✅':'')+'</div><div class="cimeta"><span class="tbadge" style="background:'+cfg.color+'20;color:'+cfg.color+'">'+cfg.label+'</span>'+ds+' · '+c.userName+' · 완주 '+(c.completedBy||[]).length+'명</div>'+(c.desc?'<div style="font-size:12px;color:var(--sub);margin-top:3px">'+c.desc+'</div>':'')+'</div></div>';
+  }).join('');
+}
+
+function focusCourse(id){
+  var c=courses.find(function(x){return x.id===id;});
+  if(!c||!c.path||!c.path.length) return;
+  map.setCenter(new kakao.maps.LatLng(c.path[0].lat,c.path[0].lng));
+  map.setLevel(4);
+  document.getElementById('clist-panel').classList.remove('open');
+  showInfo(c);
+}
+
+// ── 토스트 ───────────────────────────────────────
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},3000);
+}
+
+// ── 언어 버튼 ────────────────────────────────────
+document.getElementById('lang-btn').addEventListener('click',function(){
+  var isEn = this.textContent==='EN';
+  this.textContent = isEn?'KO':'EN';
+  document.getElementById('auth-label').textContent = isEn?'Login / Sign up':'로그인 / 회원가입';
+});
+
+// ── 카카오맵 로드 ────────────────────────────────
+kakao.maps.load(initMap);
 </script>
 </body>
 </html>
