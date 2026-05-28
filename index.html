@@ -6,7 +6,7 @@
   <meta name="description" content="서울 걷기·달리기·관광 코스 플랫폼. Draw and share routes in Seoul.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Routocity — 서울 코스 플랫폼</title>
-  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=54abca9e919cf2482bed4c21051bd6a8"></script>
+  <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=54abca9e919cf2482bed4c21051bd6a8&autoload=false"></script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{
@@ -607,7 +607,7 @@
   });
 
   // ── 카카오맵 준비되면 초기화 ────────────────────
-  kakao.maps.load(initMap);
+  window.addEventListener("load", () => { kakao.maps.load(initMap); });
 </script>
 </body>
 </html>
