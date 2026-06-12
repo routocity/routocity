@@ -6,6 +6,9 @@
   <meta name="description" content="서울 걷기·달리기·관광 코스 플랫폼.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Routocity — 서울 코스 플랫폼</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E🗺️%3C/text%3E%3C/svg%3E">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{--bg:#f5f4f0;--surface:#fff;--border:#e2e0db;--text:#1a1a1a;--sub:#6b7280;--accent:#2563eb;--accentH:#1d4ed8;--hh:52px;}
@@ -16,7 +19,18 @@
     #auth-btn{background:var(--accent);color:#fff;border-color:var(--accent);display:flex;align-items:center;gap:6px}
     #user-menu{display:none;align-items:center;gap:8px}
     #user-avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;overflow:hidden}
-    #map{position:fixed;top:var(--hh);left:0;right:0;bottom:0}
+    #map{position:fixed;top:var(--hh);left:0;right:0;bottom:0;background:#e8eef2}
+    .leaflet-container{background:#e8eef2;font-family:inherit}
+    /* 그리기 모드 커서 */
+    #map.drawing,#map.drawing .leaflet-grab,#map.drawing .leaflet-interactive{cursor:crosshair}
+    /* 코스 시작 핀(divIcon) 기본 배경 제거 */
+    .course-pin{background:transparent;border:none}
+    /* 지도 로드 실패 안내 */
+    #map-error{display:none;position:fixed;top:var(--hh);left:0;right:0;bottom:0;z-index:40;background:var(--bg);align-items:center;justify-content:center;padding:24px;text-align:center}
+    #map-error .me-box{max-width:320px}
+    #map-error .me-title{font-size:17px;font-weight:800;margin:10px 0 6px}
+    #map-error .me-sub{font-size:13px;color:var(--sub);line-height:1.6;margin-bottom:18px}
+    #map-error button{padding:10px 22px;border-radius:10px;background:var(--accent);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer}
     #controls{position:fixed;top:calc(var(--hh)+12px);left:12px;z-index:50;display:flex;flex-direction:column;gap:8px}
     .cbtn{display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:10px;background:var(--surface);border:1px solid var(--border);font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.1);white-space:nowrap;color:var(--text)}
     .cbtn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -97,6 +111,15 @@
 </header>
 
 <div id="map"></div>
+
+<div id="map-error">
+  <div class="me-box">
+    <div style="font-size:34px">🗺️</div>
+    <div class="me-title">지도를 불러오지 못했어요</div>
+    <div class="me-sub">네트워크 상태를 확인하고 다시 시도해주세요.<br>코스 목록·로그인 등 다른 기능은 정상 작동해요.</div>
+    <button onclick="location.reload()">다시 시도</button>
+  </div>
+</div>
 
 <div id="controls">
   <button class="cbtn" id="draw-btn" onclick="toggleDraw()">✏️ <span id="draw-label">코스 그리기</span></button>
@@ -200,8 +223,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
-<!-- 카카오맵 SDK (autoload=false) -->
-<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=54abca9e919cf2482bed4c21051bd6a8&autoload=false"></script>
+<!-- Leaflet (OpenStreetMap) -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 // ── Firebase 초기화 ──────────────────────────────
@@ -301,22 +324,27 @@ function showErr(id,msg,ok){
 }
 function clearErrs(){ ['l-err','s-err','r-err'].forEach(function(id){ var e=document.getElementById(id); if(e){e.textContent='';e.style.display='none';} }); }
 
-// ── 지도 초기화 ──────────────────────────────────
+// ── 지도 초기화 (Leaflet + OpenStreetMap) ────────
 function initMap(){
-  map = new kakao.maps.Map(document.getElementById('map'),{
-    center: new kakao.maps.LatLng(37.5665,126.9780), level:5
-  });
-  kakao.maps.event.addListener(map,'click',function(e){
+  map = L.map('map',{zoomControl:false}).setView([37.5665,126.9780], 14);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    maxZoom:19,
+    attribution:'&copy; OpenStreetMap contributors'
+  }).addTo(map);
+  L.control.zoom({position:'bottomright'}).addTo(map);
+  map.on('click',function(e){
     if(!drawing) return;
-    var ll=e.latLng;
-    path.push({lat:ll.getLat(),lng:ll.getLng()});
-    addDot(ll); redrawLine(); updateInfo();
+    path.push({lat:e.latlng.lat,lng:e.latlng.lng});
+    addDot(e.latlng); redrawLine(); updateInfo();
   });
   loadCourses();
 }
 
 // ── 그리기 ───────────────────────────────────────
-function toggleDraw(){ drawing ? stopDraw() : startDraw(); }
+function toggleDraw(){
+  if(!map){ toast('지도를 불러오지 못했어요. 새로고침 후 다시 시도해주세요.'); return; }
+  drawing ? stopDraw() : startDraw();
+}
 
 function startDraw(){
   drawing=true; path=[]; clearLayer();
@@ -324,34 +352,33 @@ function startDraw(){
   document.getElementById('draw-label').textContent='그리기 중단';
   document.getElementById('dpanel').style.display='flex';
   if(me) document.getElementById('savebtn').style.display='flex';
-  map.setCursor('crosshair');
+  document.getElementById('map').classList.add('drawing');
   toast('지도를 클릭해서 코스를 그려보세요!');
 }
 function stopDraw(){
   drawing=false;
   document.getElementById('draw-btn').classList.remove('on');
   document.getElementById('draw-label').textContent='코스 그리기';
-  map.setCursor('');
+  document.getElementById('map').classList.remove('drawing');
   if(path.length<2){clearLayer();document.getElementById('dpanel').style.display='none';}
   document.getElementById('savebtn').style.display='none';
 }
 
 function addDot(ll){
   var cfg=TC[curType];
-  var svg=btoa('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><circle cx="5" cy="5" r="4" fill="'+cfg.color+'" stroke="white" stroke-width="1"/></svg>');
-  var m=new kakao.maps.Marker({position:ll,map:map,image:new kakao.maps.MarkerImage('data:image/svg+xml;base64,'+svg,new kakao.maps.Size(10,10),{offset:new kakao.maps.Point(5,5)})});
+  var m=L.circleMarker(ll,{radius:4,fillColor:cfg.color,color:'#fff',weight:1,fillOpacity:1}).addTo(map);
   dmarkers.push(m);
 }
 
 function redrawLine(){
-  if(polyline) polyline.setMap(null);
+  if(polyline){polyline.remove();polyline=null;}
   if(path.length<2) return;
-  polyline=new kakao.maps.Polyline({path:path.map(function(p){return new kakao.maps.LatLng(p.lat,p.lng);}),strokeWeight:5,strokeColor:TC[curType].color,strokeOpacity:.9,strokeStyle:'solid',map:map});
+  polyline=L.polyline(path.map(function(p){return [p.lat,p.lng];}),{weight:5,color:TC[curType].color,opacity:.9}).addTo(map);
 }
 
 function clearLayer(){
-  if(polyline){polyline.setMap(null);polyline=null;}
-  dmarkers.forEach(function(m){m.setMap(null);}); dmarkers=[]; path=[];
+  if(polyline){polyline.remove();polyline=null;}
+  dmarkers.forEach(function(m){m.remove();}); dmarkers=[]; path=[];
 }
 
 function updateInfo(){
@@ -373,14 +400,14 @@ function selType(t){
   ['walk','run','tour'].forEach(function(k){document.getElementById('t'+k[0]).classList.remove('on');});
   document.getElementById('t'+t[0]).classList.add('on');
   var pts=path.slice(); clearLayer(); path=pts;
-  pts.forEach(function(p){addDot(new kakao.maps.LatLng(p.lat,p.lng));});
+  pts.forEach(function(p){addDot([p.lat,p.lng]);});
   redrawLine();
 }
 
 function undoLast(){
   if(!path.length) return;
   path.pop();
-  var m=dmarkers.pop(); if(m)m.setMap(null);
+  var m=dmarkers.pop(); if(m)m.remove();
   redrawLine(); updateInfo();
 }
 
@@ -433,19 +460,27 @@ function loadCourses(){
     }).catch(function(e){console.error('코스 로드 실패:',e);});
 }
 
+function pinIcon(color,emoji){
+  var html='<svg xmlns="http://www.w3.org/2000/svg" width="28" height="34" viewBox="0 0 28 34">'+
+    '<path d="M14 0C6.27 0 0 6.27 0 14c0 10.5 14 20 14 20s14-9.5 14-20C28 6.27 21.73 0 14 0z" fill="'+color+'"/>'+
+    '<text x="14" y="20" text-anchor="middle" font-size="14">'+emoji+'</text></svg>';
+  return L.divIcon({html:html, className:'course-pin', iconSize:[28,34], iconAnchor:[14,34]});
+}
+
 function renderOnMap(){
-  cplines.forEach(function(p){p.line.setMap(null);if(p.sm)p.sm.setMap(null);});
+  if(!map) return;
+  cplines.forEach(function(p){p.line.remove();if(p.sm)p.sm.remove();});
   cplines=[];
   courses.forEach(function(c){
     if(!c.path||c.path.length<2) return;
     var cfg=TC[c.type]||TC.walk;
-    var pts=c.path.map(function(p){return new kakao.maps.LatLng(p.lat,p.lng);});
+    var pts=c.path.map(function(p){return [p.lat,p.lng];});
     var isDone=me&&(c.completedBy||[]).indexOf(me.uid)>=0;
-    var line=new kakao.maps.Polyline({path:pts,strokeWeight:isDone?7:5,strokeColor:isDone?'#faff00':cfg.color,strokeOpacity:isDone?1:.75,strokeStyle:'solid',map:map});
-    var svg=btoa('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="34" viewBox="0 0 28 34"><path d="M14 0C6.27 0 0 6.27 0 14c0 10.5 14 20 14 20s14-9.5 14-20C28 6.27 21.73 0 14 0z" fill="'+(isDone?'#faff00':cfg.color)+'"/><text x="14" y="20" text-anchor="middle" font-size="14">'+cfg.icon+'</text></svg>');
-    var sm=new kakao.maps.Marker({position:pts[0],map:map,title:c.name,image:new kakao.maps.MarkerImage('data:image/svg+xml;base64,'+svg,new kakao.maps.Size(28,34),{offset:new kakao.maps.Point(14,34)})});
-    kakao.maps.event.addListener(sm,'click',function(){showInfo(c);});
-    kakao.maps.event.addListener(line,'click',function(){showInfo(c);});
+    var col=isDone?'#faff00':cfg.color;
+    var line=L.polyline(pts,{weight:isDone?7:5,color:col,opacity:isDone?1:.75}).addTo(map);
+    var sm=L.marker(pts[0],{icon:pinIcon(col,cfg.icon),title:c.name}).addTo(map);
+    sm.on('click',function(){showInfo(c);});
+    line.on('click',function(){showInfo(c);});
     cplines.push({id:c.id,line:line,sm:sm});
   });
 }
@@ -477,7 +512,7 @@ function markDone(){
   }).then(function(){
     toast('완주 기록 완료! 🎉 형광색으로 표시됐어요!');
     var pl=cplines.find(function(p){return p.id===activeCourse.id;});
-    if(pl){pl.line.setOptions({strokeColor:'#faff00',strokeWeight:7,strokeOpacity:1});}
+    if(pl){pl.line.setStyle({color:'#faff00',weight:7,opacity:1});}
     document.getElementById('donebtn').textContent='✅ 완주 완료!';
     document.getElementById('donebtn').disabled=true;
     loadCourses();
@@ -506,9 +541,8 @@ function renderList(){
 function focusCourse(id){
   var c=courses.find(function(x){return x.id===id;});
   if(!c||!c.path||!c.path.length) return;
-  map.setCenter(new kakao.maps.LatLng(c.path[0].lat,c.path[0].lng));
-  map.setLevel(4);
   document.getElementById('clist-panel').classList.remove('open');
+  if(map){ map.setView([c.path[0].lat,c.path[0].lng], 15); }
   showInfo(c);
 }
 
@@ -526,8 +560,17 @@ document.getElementById('lang-btn').addEventListener('click',function(){
   document.getElementById('auth-label').textContent = isEn?'Login / Sign up':'로그인 / 회원가입';
 });
 
-// ── 카카오맵 로드 ────────────────────────────────
-kakao.maps.load(initMap);
+// ── 지도 로드 (실패해도 화면은 유지) ──────────────
+function showMapError(){
+  var b=document.getElementById('map-error');
+  if(b) b.style.display='flex';
+}
+function bootMap(){
+  if(typeof L==='undefined'){ console.error('Leaflet 로드 실패'); showMapError(); return; }
+  try{ initMap(); }
+  catch(err){ console.error('지도 초기화 실패:',err); showMapError(); }
+}
+bootMap();
 </script>
 </body>
 </html>
