@@ -3,49 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="description" content="서울 한강 도장깨기 — 라면과 야경 스탬프 투어.">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Routocity — 한강의 밤 도장깨기</title>
+  <meta name="description" content="서울 도장깨기 — 코스를 따라 스탬프를 모으는 스탬프 투어.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <title>Routocity — 도장깨기</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E🌙%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--bg:#f5f4f0;--surface:#fff;--border:#e2e0db;--text:#1a1a1a;--sub:#6b7280;--accent:#4f46e5;--accentH:#4338ca;--night:#0f1535;--hh:52px;--bnh:60px;}
-    html,body{height:100%;width:100%;overflow:hidden;font-family:'Apple SD Gothic Neo',-apple-system,sans-serif;background:var(--bg);color:var(--text)}
-    header{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--hh);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:10px}
+    button,input,select,textarea,a,.fab,.chip,.spot,.abtn{touch-action:manipulation}
+    :root{--bg:#f5f4f0;--surface:#fff;--border:#e2e0db;--text:#1a1a1a;--sub:#6b7280;--accent:#4f46e5;--night:#0f1535;--hh:52px;--bnh:60px;
+          --safeT:env(safe-area-inset-top,0px);--safeB:env(safe-area-inset-bottom,0px);--safeL:env(safe-area-inset-left,0px);--safeR:env(safe-area-inset-right,0px);}
+    html,body{height:100%;width:100%;overflow:hidden;font-family:'Apple SD Gothic Neo',-apple-system,sans-serif;background:var(--bg);color:var(--text);
+          overscroll-behavior:none;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+    header{position:fixed;top:0;left:0;right:0;z-index:100;height:calc(var(--hh) + var(--safeT));padding-top:var(--safeT);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding-left:calc(16px + var(--safeL));padding-right:calc(16px + var(--safeR));gap:8px}
     .logo{font-size:18px;font-weight:800;letter-spacing:-.5px;flex:1}.logo span{color:var(--accent)}
-    .hbtn{padding:6px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:13px;font-weight:600;color:var(--sub)}
+    .hbtn{min-height:38px;padding:8px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:13px;font-weight:600;color:var(--sub);display:inline-flex;align-items:center;justify-content:center}
     #auth-btn{background:var(--accent);color:#fff;border-color:var(--accent);display:flex;align-items:center;gap:6px}
-    #user-menu{display:none;align-items:center;gap:8px}
+    #user-menu{display:none;align-items:center;gap:6px}
     #user-avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;overflow:hidden}
-    #map{position:fixed;top:var(--hh);left:0;right:0;bottom:0;background:#dfe7ee}
+    #map{position:fixed;top:calc(var(--hh) + var(--safeT));left:0;right:0;bottom:0;background:#dfe7ee}
     .leaflet-container{background:#dfe7ee;font-family:inherit}
     .course-pin{background:transparent;border:none}
-    #map-error{display:none;position:fixed;top:var(--hh);left:0;right:0;bottom:0;z-index:40;background:var(--bg);align-items:center;justify-content:center;padding:24px;text-align:center}
+    #map-error{display:none;position:fixed;top:calc(var(--hh) + var(--safeT));left:0;right:0;bottom:0;z-index:40;background:var(--bg);align-items:center;justify-content:center;padding:24px;text-align:center}
     #map-error .me-title{font-size:17px;font-weight:800;margin:10px 0 6px}
     #map-error .me-sub{font-size:13px;color:var(--sub);line-height:1.6;margin-bottom:18px}
     #map-error button{padding:10px 22px;border-radius:10px;background:var(--accent);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer}
 
-    #course-hdr{position:fixed;top:calc(var(--hh)+10px);left:12px;right:12px;z-index:50;background:var(--night);color:#fff;border-radius:14px;padding:12px 14px;box-shadow:0 4px 20px rgba(0,0,0,.18);display:flex;align-items:center;gap:12px;cursor:pointer}
+    #course-hdr{position:fixed;top:calc(var(--hh) + var(--safeT) + 10px);left:calc(12px + var(--safeL));right:calc(12px + var(--safeR));z-index:50;background:var(--night);color:#fff;border-radius:14px;padding:12px 14px;box-shadow:0 4px 20px rgba(0,0,0,.18);display:flex;align-items:center;gap:12px;cursor:pointer}
     #course-hdr .ch-t{font-size:14px;font-weight:800}
     #course-hdr .ch-s{font-size:12px;opacity:.75;margin-top:2px}
     #course-hdr .ch-prog{margin-left:auto;text-align:center;flex-shrink:0}
     #course-hdr .ch-prog b{font-size:18px;font-weight:800}
     #course-hdr .ch-prog span{font-size:10px;opacity:.7;display:block}
 
-    #map-fabs{position:fixed;right:14px;bottom:calc(var(--bnh)+16px);z-index:55;display:flex;flex-direction:column;gap:10px}
+    #map-fabs{position:fixed;right:calc(14px + var(--safeR));bottom:calc(var(--bnh) + var(--safeB) + 16px);z-index:55;display:flex;flex-direction:column;gap:10px}
     .fab{width:46px;height:46px;border-radius:50%;background:var(--surface);border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;color:var(--text)}
     .fab.acc{background:var(--accent);color:#fff;border-color:var(--accent)}
 
-    #bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:60;height:var(--bnh);background:var(--surface);border-top:1px solid var(--border);display:flex}
+    #bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:60;height:calc(var(--bnh) + var(--safeB));padding-bottom:var(--safeB);background:var(--surface);border-top:1px solid var(--border);display:flex}
     #bottom-nav button{flex:1;background:none;border:none;cursor:pointer;color:var(--sub);font-size:11px;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
     #bottom-nav button .i{font-size:20px}
     #bottom-nav button.on{color:var(--accent)}
 
-    .sheet{position:fixed;left:0;right:0;bottom:-100%;z-index:120;background:var(--surface);border-radius:18px 18px 0 0;box-shadow:0 -6px 24px rgba(0,0,0,.18);transition:bottom .28s ease;max-height:82vh;overflow-y:auto;padding:8px 18px calc(var(--bnh) + 18px)}
+    .sheet{position:fixed;left:0;right:0;bottom:-105%;z-index:120;background:var(--surface);border-radius:18px 18px 0 0;box-shadow:0 -6px 24px rgba(0,0,0,.18);transition:bottom .28s ease;max-height:82dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px calc(18px + var(--safeR)) calc(var(--bnh) + var(--safeB) + 18px) calc(18px + var(--safeL))}
     .sheet.open{bottom:0}
     .grip{width:40px;height:4px;border-radius:4px;background:var(--border);margin:6px auto 12px}
     .sheet-x{position:absolute;top:14px;right:16px;width:28px;height:28px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;font-size:15px;color:var(--sub)}
+
+    .chips{display:flex;gap:7px;overflow-x:auto;padding:2px 0 10px;-webkit-overflow-scrolling:touch}
+    .chip{flex-shrink:0;font-size:12px;font-weight:700;padding:6px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--sub);cursor:pointer;white-space:nowrap}
+    .chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 
     .pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:var(--bg);color:var(--sub)}
     .pill.ok{background:#dcfce7;color:#15803d}
@@ -60,8 +68,9 @@
 
     .bigbtn{display:block;width:100%;text-align:center;padding:14px;border-radius:12px;background:var(--accent);color:#fff;font-size:15px;font-weight:800;border:none;cursor:pointer;margin-top:6px}
     .bigbtn:disabled{background:#c7c9d1;cursor:not-allowed}
+    .bigbtn.ghost{background:var(--bg);color:var(--text)}
 
-    #book{display:none;position:fixed;inset:0;z-index:110;background:var(--bg);overflow-y:auto;padding:calc(var(--hh)+16px) 18px calc(var(--bnh)+24px)}
+    #book{display:none;position:fixed;inset:0;z-index:110;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(var(--hh) + var(--safeT) + 16px) calc(18px + var(--safeR)) calc(var(--bnh) + var(--safeB) + 24px) calc(18px + var(--safeL))}
     #book.open{display:block}
     .stat{display:flex;gap:10px;margin-bottom:18px}
     .stat>div{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px}
@@ -69,25 +78,39 @@
     .booksec{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px}
     .booksec h4{font-size:14px;font-weight:800;display:flex;align-items:center;gap:6px;margin-bottom:14px}
     .slots{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    .slot{aspect-ratio:1;border-radius:50%;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#cbd0d8;font-size:24px;position:relative}
+    .slot{aspect-ratio:1;border-radius:50%;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#cbd0d8;font-size:24px}
     .slot .lbl{font-size:9px;font-weight:700;margin-top:3px;color:#cbd0d8;text-align:center;line-height:1.1;padding:0 4px}
     .slot.f{border:none;background:var(--accent);color:#fff;box-shadow:0 3px 10px rgba(79,70,229,.3)}
     .slot.f .lbl{color:#fff;opacity:.9}
-    .badges{display:flex;gap:14px;justify-content:center}
-    .badge{text-align:center;flex:1;max-width:120px}
-    .badge .circ{width:74px;height:74px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:34px;border:3px solid var(--border);color:#cbd0d8}
-    .badge.got .circ{border:none;color:#fff}
-    .badge.mini.got .circ{background:#f59e0b}
-    .badge.full.got .circ{background:var(--night)}
-    .badge .bt{font-size:12px;font-weight:700}
-    .badge .bs{font-size:11px;color:var(--sub)}
 
-    .overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px}
+    .overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:calc(16px + var(--safeT)) 16px calc(16px + var(--safeB));overflow-y:auto}
     .overlay.open{display:flex}
     #card-canvas{width:100%;max-width:300px;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.4)}
     .card-actions{display:flex;gap:10px;margin-top:14px;width:100%;max-width:300px}
     .card-actions button{flex:1;padding:12px;border-radius:10px;font-size:14px;font-weight:700;border:none;cursor:pointer}
     .ca-share{background:var(--accent);color:#fff}.ca-save{background:#fff;color:var(--text)}.ca-close{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4)}
+
+    /* 관리자 */
+    #admin{display:none;position:fixed;inset:0;z-index:210;background:var(--bg);overflow-y:auto}
+    #admin.open{display:block}
+    .adm-hd{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--border);height:calc(var(--hh) + var(--safeT));padding-top:var(--safeT);display:flex;align-items:center;padding-left:16px;padding-right:16px;gap:10px;z-index:5}
+    .adm-hd .t{flex:1;font-size:16px;font-weight:800}
+    .adm-body{padding:16px 16px calc(40px + var(--safeB))}
+    .adm-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px}
+    .adm-card h4{font-size:14px;font-weight:800;margin-bottom:12px}
+    .ain{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:8px;font-size:16px;background:var(--bg);color:var(--text);outline:none;font-family:inherit;margin-bottom:8px}
+    .ain:focus{border-color:var(--accent);background:#fff}
+    .arow{display:flex;gap:8px;align-items:center}
+    #admin-map{height:230px;border-radius:12px;overflow:hidden;margin-bottom:6px;border:1px solid var(--border)}
+    .adm-hint{font-size:12px;color:var(--sub);margin-bottom:10px}
+    .aspot{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
+    .aspot.pick{border-color:var(--accent);box-shadow:0 0 0 2px rgba(79,70,229,.2)}
+    .abtn{min-height:40px;padding:9px 13px;border-radius:8px;border:1px solid var(--border);background:var(--bg);font-size:13px;font-weight:600;cursor:pointer;color:var(--text);white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}
+    .abtn.p{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .abtn.d{color:#dc2626}
+    .acoord{font-size:12px;color:var(--sub);flex:1}
+    #admin-json{width:100%;min-height:120px;font-family:monospace;font-size:11px;padding:10px;border:1px solid var(--border);border-radius:8px;display:none;margin-top:8px;background:#0f1535;color:#c7d2fe}
+    .alist-item{display:flex;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--border)}
 
     .mbox{background:var(--surface);border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,.12);width:100%;max-width:400px;padding:32px 28px 28px;position:relative}
     .mclose{position:absolute;top:16px;right:16px;width:28px;height:28px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;font-size:16px;color:var(--sub)}
@@ -98,7 +121,7 @@
     .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
     .field{margin-bottom:14px}
     .field label{display:block;font-size:12px;font-weight:600;color:var(--sub);margin-bottom:5px}
-    .field input{width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--bg);color:var(--text);outline:none;font-family:inherit}
+    .field input{width:100%;padding:12px 13px;border:1px solid var(--border);border-radius:8px;font-size:16px;background:var(--bg);color:var(--text);outline:none;font-family:inherit}
     .field input:focus{border-color:var(--accent);background:#fff}
     .ferr{display:none;font-size:12px;margin-top:12px;padding:8px 12px;border-radius:6px;background:#fef2f2;color:#ef4444}
     .pbtn{width:100%;padding:12px;background:var(--accent);color:#fff;font-size:15px;font-weight:700;border:none;border-radius:8px;cursor:pointer;margin-top:4px}
@@ -106,10 +129,10 @@
     .mlink{font-size:13px;color:var(--accent);cursor:pointer}
     .mfooter a{font-size:13px;color:var(--accent);cursor:pointer}
 
-    #toast{position:fixed;bottom:calc(var(--bnh)+24px);left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;color:#fff;padding:11px 22px;border-radius:100px;font-size:14px;font-weight:600;opacity:0;transition:all .3s;z-index:999;pointer-events:none;white-space:nowrap;max-width:90vw}
+    #toast{position:fixed;bottom:calc(var(--bnh) + var(--safeB) + 24px);left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;color:#fff;padding:11px 22px;border-radius:100px;font-size:14px;font-weight:600;opacity:0;transition:all .3s;z-index:999;pointer-events:none;white-space:nowrap;max-width:90vw}
     #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-    #dev{position:fixed;left:12px;bottom:calc(var(--bnh)+16px);z-index:55;background:rgba(0,0,0,.72);color:#fff;border-radius:10px;padding:8px 10px;font-size:11px;max-width:160px}
+    #dev{position:fixed;left:calc(12px + var(--safeL));bottom:calc(var(--bnh) + var(--safeB) + 16px);z-index:55;background:rgba(0,0,0,.72);color:#fff;border-radius:10px;padding:8px 10px;font-size:11px;max-width:150px}
     #dev label{display:flex;align-items:center;gap:6px;cursor:pointer}
     #dev .hint{opacity:.65;margin-top:4px;line-height:1.3}
   </style>
@@ -124,6 +147,7 @@
     <span id="auth-label">로그인</span>
   </button>
   <div id="user-menu">
+    <button class="hbtn" id="admin-btn" style="display:none" onclick="openAdmin()">관리자</button>
     <div id="user-avatar"></div>
     <button class="hbtn" onclick="doLogout()">로그아웃</button>
   </div>
@@ -142,10 +166,10 @@
 
 <div id="course-hdr" onclick="openCourse()">
   <div>
-    <div class="ch-t">🌙 한강의 밤</div>
-    <div class="ch-s">라면과 야경 도장깨기 · 안전 동선</div>
+    <div class="ch-t" id="ch-t">🌙 한강의 밤</div>
+    <div class="ch-s" id="ch-s">라면과 야경 도장깨기</div>
   </div>
-  <div class="ch-prog"><b id="ch-count">0</b><span>/ 6 스탬프</span></div>
+  <div class="ch-prog"><b id="ch-count">0</b><span id="ch-total">/ 6 스탬프</span></div>
 </div>
 
 <div id="map-fabs">
@@ -155,7 +179,7 @@
 
 <div id="dev">
   <label><input type="checkbox" id="dev-sim"> 위치 시뮬(개발용)</label>
-  <div class="hint">켜면 스팟을 눌러 "그 자리에 있다"고 가정해 체크인 테스트. 배포 전 제거하세요.</div>
+  <div class="hint">켜면 스팟을 눌러 체크인 테스트. 배포 전 제거하세요.</div>
 </div>
 
 <div id="bottom-nav">
@@ -166,11 +190,9 @@
 <div id="course-sheet" class="sheet">
   <button class="sheet-x" onclick="closeSheet('course-sheet')">✕</button>
   <div class="grip"></div>
-  <div style="font-size:18px;font-weight:800">🌙 한강의 밤</div>
-  <div style="font-size:13px;color:var(--sub);margin:4px 0 10px">라면과 야경 도장깨기 — 아무 순서로나 6곳을 모아보세요.</div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
-    <span class="pill">6 스팟</span><span class="pill">약 2시간</span><span class="pill ok">🛡 안전 동선</span>
-  </div>
+  <div class="chips" id="course-chips"></div>
+  <div style="font-size:18px;font-weight:800" id="cs-title">🌙 한강의 밤</div>
+  <div style="font-size:13px;color:var(--sub);margin:4px 0 10px" id="cs-desc">라면과 야경 도장깨기</div>
   <div id="spot-list"></div>
 </div>
 
@@ -191,19 +213,7 @@
     <div><div class="l">모은 스탬프</div><div class="v" id="bk-stamps">0</div></div>
     <div><div class="l">완주 코스</div><div class="v" id="bk-courses">0</div></div>
   </div>
-  <div class="booksec">
-    <h4>🌙 한강의 밤</h4>
-    <div class="slots" id="bk-slots"></div>
-  </div>
-  <div class="booksec">
-    <h4>🏅 뱃지</h4>
-    <div class="badges">
-      <div class="badge mini" id="bdg-mini"><div class="circ">🥉</div><div class="bt">하프 메달</div><div class="bs">3개 모으면</div></div>
-      <div class="badge full" id="bdg-full"><div class="circ">🏆</div><div class="bt">완주 트로피</div><div class="bs">6개 모으면</div></div>
-    </div>
-    <button id="bk-cardbtn" class="bigbtn" style="margin-top:18px;display:none" onclick="openCard()">🎉 완주 카드 보기 / 공유</button>
-  </div>
-  <div style="text-align:center;font-size:12px;color:var(--sub);margin-top:10px">진행상황은 이 기기에 저장돼요. (다음 단계: 계정 연동으로 기기 간 동기화)</div>
+  <div id="book-sections"></div>
 </div>
 
 <div id="card-overlay" class="overlay">
@@ -217,12 +227,45 @@
   </div>
 </div>
 
+<!-- 관리자 코스 등록 -->
+<div id="admin">
+  <div class="adm-hd">
+    <div class="t">⚙️ 관리자 · 코스 등록</div>
+    <button class="abtn" onclick="newDraft()">+ 새 코스</button>
+    <button class="abtn" onclick="closeAdmin()">닫기</button>
+  </div>
+  <div class="adm-body">
+    <div class="adm-card">
+      <h4>코스 정보</h4>
+      <div class="arow"><input class="ain" id="adm-emoji" style="width:60px;text-align:center" placeholder="🌙" maxlength="2"><input class="ain" id="adm-title" placeholder="코스 이름 (예: 한강의 밤)"></div>
+      <input class="ain" id="adm-desc" placeholder="한 줄 설명 (예: 라면과 야경 도장깨기)">
+    </div>
+    <div class="adm-card">
+      <h4>스팟 위치</h4>
+      <div class="adm-hint">스팟의 <b>지도에서 위치</b>를 누른 뒤, 아래 지도를 클릭하면 그 위치가 찍혀요.</div>
+      <div id="admin-map"></div>
+    </div>
+    <div class="adm-card">
+      <h4>스팟 목록</h4>
+      <div id="admin-spots"></div>
+      <button class="bigbtn ghost" onclick="adminAddSpot()">+ 스팟 추가</button>
+    </div>
+    <button class="bigbtn" onclick="adminSave()">💾 코스 저장</button>
+    <button class="bigbtn ghost" style="margin-top:8px" onclick="adminExport()">⤓ JSON 내보내기 (코드에 영구 반영용)</button>
+    <textarea id="admin-json" readonly></textarea>
+    <div class="adm-card" style="margin-top:14px">
+      <h4>등록된 커스텀 코스</h4>
+      <div id="admin-courses"></div>
+    </div>
+  </div>
+</div>
+
 <div id="auth-overlay" class="overlay" onclick="if(event.target===this)closeAuth()">
   <div class="mbox">
     <button class="mclose" onclick="closeAuth()">✕</button>
     <div id="m-login">
       <div class="mtitle">로그인</div>
-      <div class="msub">한강의 밤, 같이 정복해요 🌙</div>
+      <div class="msub">도장깨기, 같이 정복해요 🌙</div>
       <button class="gbtn" onclick="doGoogle()"><svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg> Google로 계속하기</button>
       <div class="divider">또는</div>
       <div class="field"><label>이메일</label><input id="l-email" type="email" placeholder="hello@example.com"></div>
@@ -278,9 +321,11 @@ firebase.initializeApp({
 });
 const auth = firebase.auth();
 
-var COURSE = {
-  id:'hangang-night',
-  title:'한강의 밤',
+// 운영자 이메일을 넣으면 그 계정에만 관리자 버튼이 보입니다. (비어 있으면 #admin 으로 접근)
+var ADMIN_EMAILS = [];
+
+var SEED = {
+  id:'hangang-night', emoji:'🌙', title:'한강의 밤', desc:'라면과 야경 도장깨기',
   spots:[
     {id:'s1', name:'여의도 · 한강라면', emoji:'🍜', lat:37.5276, lng:126.9330, radius:140, hint:'편의점 라면존에서 끓여 강뷰 먹방 인증!'},
     {id:'s2', name:'마포대교 야경', emoji:'🌉', lat:37.5378, lng:126.9447, radius:150, hint:'다리 위에서 보는 서울의 밤.'},
@@ -290,21 +335,32 @@ var COURSE = {
     {id:'s6', name:'노들섬 나이트', emoji:'🎸', lat:37.5175, lng:126.9582, radius:150, hint:'라이브·루프탑으로 코스 마무리.'}
   ]
 };
-var MINI_AT = 3, FULL_AT = COURSE.spots.length;
 
 var me=null, map=null, myMarker=null, accCircle=null, myPos=null;
-var spotMarkers={}, collected=new Set(), simMode=false, activeSpot=null, hasCelebratedFull=false;
+var COURSES=[], activeId=null, collected=new Set();
+var spotMarkers={}, simMode=false, activeSpot=null, hasCelebratedFull=false;
+var adminMap=null, draftSpots=[], adminPickIndex=null, adminMarkers=[], editId=null;
 
-function storeKey(){ return 'routo_stamps_'+(me?me.uid:'guest'); }
-function loadProgress(){
-  collected=new Set();
-  try{ var raw=localStorage.getItem(storeKey()); if(raw){ JSON.parse(raw).forEach(function(id){collected.add(id);}); } }catch(e){}
-  hasCelebratedFull = collected.size>=FULL_AT;
-  COURSE.spots.forEach(function(s){ if(spotMarkers[s.id]) spotMarkers[s.id].setIcon(spotIcon(s)); });
-  refreshAll();
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+function getActive(){ return COURSES.find(function(c){return c.id===activeId;}) || COURSES[0]; }
+function miniAt(c){ return Math.max(1, Math.ceil((c||getActive()).spots.length/2)); }
+
+// ── 코스 저장소 (커스텀은 localStorage) ───────────
+function customCourses(){ try{ var r=localStorage.getItem('routo_courses'); return r?JSON.parse(r):[]; }catch(e){ return []; } }
+function saveCustom(list){ try{ localStorage.setItem('routo_courses', JSON.stringify(list)); }catch(e){} }
+function loadCourses(){
+  COURSES=[clone(SEED)];
+  customCourses().forEach(function(c){ if(!COURSES.find(function(x){return x.id===c.id;})) COURSES.push(c); });
+  if(!activeId || !COURSES.find(function(c){return c.id===activeId;})) activeId=COURSES[0].id;
 }
-function saveProgress(){ try{ localStorage.setItem(storeKey(), JSON.stringify(Array.from(collected))); }catch(e){} }
 
+// ── 진행상황 (기기 저장; 코스별) ──────────────────
+function keyFor(cid){ return 'routo_stamps_'+(me?me.uid:'guest')+'_'+cid; }
+function getCollectedSet(cid){ var s=new Set(); try{ var r=localStorage.getItem(keyFor(cid)); if(r) JSON.parse(r).forEach(function(id){s.add(id);}); }catch(e){} return s; }
+function loadCollected(){ collected=getCollectedSet(activeId); hasCelebratedFull=collected.size>=getActive().spots.length; }
+function saveCollected(){ try{ localStorage.setItem(keyFor(activeId), JSON.stringify(Array.from(collected))); }catch(e){} }
+
+// ── Auth ─────────────────────────────────────────
 auth.onAuthStateChanged(function(u){
   me=u;
   var ab=document.getElementById('auth-btn'), um=document.getElementById('user-menu'), av=document.getElementById('user-avatar');
@@ -313,8 +369,13 @@ auth.onAuthStateChanged(function(u){
     av.textContent=u.photoURL?'':(u.displayName||u.email||'?')[0].toUpperCase();
     if(u.photoURL){av.style.backgroundImage='url('+u.photoURL+')';av.style.backgroundSize='cover';}
   }else{ ab.style.display='flex'; um.style.display='none'; }
-  loadProgress();
+  updateAdminBtn();
+  loadCollected(); renderMapSpots(); refreshAll();
 });
+function isAdmin(){ return (me && ADMIN_EMAILS.indexOf(me.email)>=0) || location.hash==='#admin'; }
+function updateAdminBtn(){ var b=document.getElementById('admin-btn'); if(b) b.style.display=isAdmin()?'inline-block':'none'; }
+window.addEventListener('hashchange',updateAdminBtn);
+
 function openAuth(m){ document.getElementById('auth-overlay').classList.add('open'); switchM(m); }
 function closeAuth(){ document.getElementById('auth-overlay').classList.remove('open'); clearErrs(); }
 function switchM(m){ ['login','signup','reset'].forEach(function(k){document.getElementById('m-'+k).style.display=k===m?'block':'none';}); clearErrs(); }
@@ -334,23 +395,34 @@ function distM(a,b){
   return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
 }
 
+// ── 지도 ─────────────────────────────────────────
 function spotIcon(spot){
   var done=collected.has(spot.id);
   var bg=done?'#4f46e5':'#fff', col=done?'#fff':'#1a1a1a', bd=done?'#4f46e5':'#cbd0d8';
-  var inner=done?'✓':spot.emoji;
+  var inner=done?'✓':(spot.emoji||'📍');
   var html='<div style="width:34px;height:34px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:'+bg+';border:2px solid '+bd+';box-shadow:0 2px 6px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center">'
     +'<span style="transform:rotate(45deg);font-size:15px;color:'+col+'">'+inner+'</span></div>';
   return L.divIcon({html:html, className:'course-pin', iconSize:[34,34], iconAnchor:[17,32]});
+}
+function clearSpotMarkers(){ Object.keys(spotMarkers).forEach(function(k){ map.removeLayer(spotMarkers[k]); }); spotMarkers={}; }
+function renderMapSpots(){
+  if(!map) return;
+  clearSpotMarkers();
+  var c=getActive(); if(!c) return;
+  var pts=[];
+  c.spots.forEach(function(s){
+    if(s.lat==null||s.lng==null) return;
+    var m=L.marker([s.lat,s.lng],{icon:spotIcon(s),title:s.name}).addTo(map);
+    m.on('click',function(){ onSpotTap(s); });
+    spotMarkers[s.id]=m; pts.push([s.lat,s.lng]);
+  });
+  if(pts.length){ try{ map.fitBounds(pts,{padding:[60,60],maxZoom:15}); }catch(e){} }
 }
 function initMap(){
   map=L.map('map',{zoomControl:false}).setView([37.522,126.965],13);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
   L.control.zoom({position:'bottomright'}).addTo(map);
-  COURSE.spots.forEach(function(s){
-    var m=L.marker([s.lat,s.lng],{icon:spotIcon(s),title:s.name}).addTo(map);
-    m.on('click',function(){ onSpotTap(s); });
-    spotMarkers[s.id]=m;
-  });
+  renderMapSpots();
   startGeo();
 }
 function startGeo(){
@@ -361,9 +433,7 @@ function startGeo(){
     if(!myMarker){
       myMarker=L.circleMarker([myPos.lat,myPos.lng],{radius:7,fillColor:'#2563eb',color:'#fff',weight:3,fillOpacity:1}).addTo(map);
       accCircle=L.circle([myPos.lat,myPos.lng],{radius:acc,color:'#2563eb',weight:1,fillColor:'#2563eb',fillOpacity:.08}).addTo(map);
-    }else{
-      myMarker.setLatLng([myPos.lat,myPos.lng]); accCircle.setLatLng([myPos.lat,myPos.lng]).setRadius(acc);
-    }
+    }else{ myMarker.setLatLng([myPos.lat,myPos.lng]); accCircle.setLatLng([myPos.lat,myPos.lng]).setRadius(acc); }
     if(activeSpot) updateCheckinStatus();
   }, function(err){
     if(err.code===1) toast('위치 권한이 필요해요. 브라우저 설정에서 허용해주세요.');
@@ -372,34 +442,52 @@ function startGeo(){
 }
 function recenter(){
   if(simMode){ toast('시뮬 모드: 스팟을 눌러 위치를 가정하세요.'); return; }
-  if(myPos){ map.setView([myPos.lat,myPos.lng],16); }
-  else toast('아직 위치를 못 잡았어요. 잠시만요…');
+  if(myPos){ map.setView([myPos.lat,myPos.lng],16); } else toast('아직 위치를 못 잡았어요. 잠시만요…');
 }
 
+// ── 코스/스팟 ────────────────────────────────────
 function effPos(spot){ return (simMode && spot) ? {lat:spot.lat,lng:spot.lng} : myPos; }
-function openCourse(){ renderSpotList(); openSheet('course-sheet'); }
+function switchCourse(id){
+  if(activeSpot){} activeId=id; loadCollected(); renderMapSpots(); refreshAll(); renderChips(); renderSpotList(); updateHeader();
+}
+function renderChips(){
+  document.getElementById('course-chips').innerHTML = COURSES.map(function(c){
+    return '<button class="chip'+(c.id===activeId?' on':'')+'" onclick="switchCourse(\''+c.id+'\')">'+(c.emoji||'📍')+' '+c.title+'</button>';
+  }).join('');
+}
+function openCourse(){ renderChips(); renderSpotList(); updateHeader(); openSheet('course-sheet'); }
 function renderSpotList(){
-  document.getElementById('spot-list').innerHTML = COURSE.spots.map(function(s){
+  var c=getActive(); if(!c) return;
+  document.getElementById('cs-title').textContent=(c.emoji||'')+' '+c.title;
+  document.getElementById('cs-desc').textContent=c.desc||'';
+  document.getElementById('spot-list').innerHTML = c.spots.map(function(s){
     var done=collected.has(s.id);
-    var dist=myPos?distM(myPos,s):null;
+    var dist=(myPos&&s.lat!=null)?distM(myPos,s):null;
     var right = done ? '<span class="pill ok">✓ 완료</span>'
       : (dist!=null ? '<span class="pill '+(dist<=s.radius?'ok':'')+'">'+fmtDist(dist)+'</span>' : '<span class="pill">위치 확인중</span>');
     return '<div class="spot'+(done?' done':'')+'" onclick="onSpotTap(findSpot(\''+s.id+'\'))">'
-      +'<div class="si">'+(done?'✓':s.emoji)+'</div>'
-      +'<div><div class="sn">'+s.name+'</div><div class="sd">'+s.hint+'</div></div>'
+      +'<div class="si">'+(done?'✓':(s.emoji||'📍'))+'</div>'
+      +'<div><div class="sn">'+s.name+'</div><div class="sd">'+(s.hint||'')+'</div></div>'
       +'<div class="sright">'+right+'</div></div>';
   }).join('');
 }
-function findSpot(id){ return COURSE.spots.find(function(s){return s.id===id;}); }
+function findSpot(id){ return getActive().spots.find(function(s){return s.id===id;}); }
 function fmtDist(d){ return d<1000 ? Math.round(d)+'m' : (d/1000).toFixed(1)+'km'; }
+function updateHeader(){
+  var c=getActive(); if(!c) return;
+  document.getElementById('ch-t').textContent=(c.emoji||'')+' '+c.title;
+  document.getElementById('ch-s').textContent=c.desc||'';
+  document.getElementById('ch-count').textContent=collected.size;
+  document.getElementById('ch-total').textContent='/ '+c.spots.length+' 스탬프';
+}
 
 function onSpotTap(s){
   if(!s) return;
   activeSpot=s;
   closeSheet('course-sheet');
-  document.getElementById('ci-emoji').textContent=s.emoji;
+  document.getElementById('ci-emoji').textContent=s.emoji||'📍';
   document.getElementById('ci-name').textContent=s.name;
-  document.getElementById('ci-hint').textContent=s.hint;
+  document.getElementById('ci-hint').textContent=s.hint||'';
   updateCheckinStatus();
   openSheet('checkin-sheet');
 }
@@ -415,78 +503,186 @@ function updateCheckinStatus(){
   else{ st.innerHTML='<span class="pill far">스팟까지 '+fmtDist(d)+' · 더 가까이 가야 해요</span>'; btn.disabled=true; btn.textContent='스팟 근처에서 체크인'; }
 }
 function doCheckin(){
-  var s=activeSpot; if(!s||collected.has(s.id)) return;
+  var s=activeSpot, c=getActive(); if(!s||collected.has(s.id)) return;
   var pos=effPos(s); if(!pos) return;
   if(!simMode && distM(pos,s)>s.radius){ updateCheckinStatus(); return; }
-  collected.add(s.id); saveProgress();
+  collected.add(s.id); saveCollected();
   if(spotMarkers[s.id]) spotMarkers[s.id].setIcon(spotIcon(s));
   refreshAll();
   closeSheet('checkin-sheet');
   toast('🎉 '+s.name+' 스탬프 획득!');
   var n=collected.size;
-  if(n===MINI_AT) setTimeout(function(){ toast('🥉 하프 메달 달성! 절반 왔어요!'); },900);
-  if(n>=FULL_AT && !hasCelebratedFull){ hasCelebratedFull=true; setTimeout(function(){ showBook(); openCard(); },900); }
+  if(n===miniAt(c)) setTimeout(function(){ toast('🥉 하프 메달 달성! 절반 왔어요!'); },900);
+  if(n>=c.spots.length && !hasCelebratedFull){ hasCelebratedFull=true; setTimeout(function(){ showBook(); openCard(activeId); },900); }
 }
 
 function openSheet(id){ document.getElementById(id).classList.add('open'); }
 function closeSheet(id){ document.getElementById(id).classList.remove('open'); if(id==='checkin-sheet') activeSpot=null; }
-function showMap(){ document.getElementById('book').classList.remove('open'); navOn('nav-map'); }
+function showMap(){ document.getElementById('book').classList.remove('open'); navOn('nav-map'); if(map) setTimeout(function(){map.invalidateSize();},60); }
 function showBook(){ renderBook(); document.getElementById('book').classList.add('open'); navOn('nav-book'); }
 function navOn(id){ ['nav-map','nav-book'].forEach(function(k){document.getElementById(k).classList.toggle('on',k===id);}); }
 
 function refreshAll(){
-  var n=collected.size;
-  document.getElementById('ch-count').textContent=n;
+  updateHeader();
   if(document.getElementById('course-sheet').classList.contains('open')) renderSpotList();
   if(document.getElementById('book').classList.contains('open')) renderBook();
 }
 function renderBook(){
-  var n=collected.size;
-  document.getElementById('bk-stamps').textContent=n;
-  document.getElementById('bk-courses').textContent=(n>=FULL_AT?1:0);
-  document.getElementById('bk-slots').innerHTML=COURSE.spots.map(function(s){
-    var done=collected.has(s.id);
-    return '<div class="slot'+(done?' f':'')+'">'+(done?s.emoji:'<span style="font-size:20px">？</span>')+'<span class="lbl">'+s.name.split('·').pop().trim()+'</span></div>';
+  var totalStamps=0, done=0;
+  COURSES.forEach(function(c){ var n=getCollectedSet(c.id).size; totalStamps+=n; if(n>=c.spots.length&&c.spots.length>0) done++; });
+  document.getElementById('bk-stamps').textContent=totalStamps;
+  document.getElementById('bk-courses').textContent=done;
+  document.getElementById('book-sections').innerHTML = COURSES.map(function(c){
+    var set=getCollectedSet(c.id), full=c.spots.length>0&&set.size>=c.spots.length;
+    var slots=c.spots.map(function(s){
+      var f=set.has(s.id);
+      return '<div class="slot'+(f?' f':'')+'">'+(f?(s.emoji||'✓'):'<span style="font-size:20px">？</span>')+'<span class="lbl">'+(s.name||'').split('·').pop().trim()+'</span></div>';
+    }).join('');
+    return '<div class="booksec"><h4>'+(c.emoji||'📍')+' '+c.title+' <span style="font-weight:600;color:var(--sub);font-size:12px">'+set.size+'/'+c.spots.length+'</span></h4>'
+      +'<div class="slots">'+slots+'</div>'
+      +(full?'<button class="bigbtn" style="margin-top:14px" onclick="openCard(\''+c.id+'\')">🏆 완주! 카드 보기 / 공유</button>':'')
+      +'</div>';
   }).join('');
-  document.getElementById('bdg-mini').classList.toggle('got', n>=MINI_AT);
-  document.getElementById('bdg-full').classList.toggle('got', n>=FULL_AT);
-  document.getElementById('bk-cardbtn').style.display = n>=FULL_AT ? 'block':'none';
 }
 
-function drawCard(){
-  var c=document.getElementById('card-canvas'), x=c.getContext('2d'), W=c.width, H=c.height;
+// ── 완주 카드 ────────────────────────────────────
+function openCard(cid){ drawCard(COURSES.find(function(c){return c.id===cid;})||getActive()); document.getElementById('card-overlay').classList.add('open'); }
+function closeCard(){ document.getElementById('card-overlay').classList.remove('open'); }
+function drawCard(c){
+  var cv=document.getElementById('card-canvas'), x=cv.getContext('2d'), W=cv.width, H=cv.height;
   var g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#1b2660'); g.addColorStop(1,'#0a0f2c');
   x.fillStyle=g; x.fillRect(0,0,W,H);
   for(var i=0;i<60;i++){ x.fillStyle='rgba(255,255,255,'+(Math.random()*0.5+0.1).toFixed(2)+')'; x.beginPath(); x.arc(Math.random()*W,Math.random()*H*0.55,Math.random()*1.6+0.4,0,7); x.fill(); }
   x.textAlign='center';
-  x.fillStyle='#c7d2fe'; x.font='600 30px sans-serif'; x.fillText('🌙 ROUTOCITY', W/2, 90);
-  x.fillStyle='#fff'; x.font='800 54px sans-serif'; x.fillText('한강의 밤 정복!', W/2, 175);
+  x.fillStyle='#c7d2fe'; x.font='600 30px sans-serif'; x.fillText((c.emoji||'🌙')+' ROUTOCITY', W/2, 90);
+  x.fillStyle='#fff'; x.font='800 52px sans-serif'; x.fillText(c.title+' 정복!', W/2, 175);
   x.fillStyle='#a5b4fc'; x.font='400 26px sans-serif';
-  var d=new Date(); x.fillText(d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate()+' · 6/6 완주', W/2, 225);
-  var cols=3, sz=120, gap=40, startX=(W-(cols*sz+(cols-1)*gap))/2, startY=320;
-  COURSE.spots.forEach(function(s,i){
+  var d=new Date(); x.fillText(d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate()+' · '+c.spots.length+'/'+c.spots.length+' 완주', W/2, 225);
+  var cols=3, sz=120, gap=40, n=c.spots.length, startX=(W-(cols*sz+(cols-1)*gap))/2, startY=320;
+  c.spots.forEach(function(s,i){
     var cx=startX+(i%cols)*(sz+gap)+sz/2, cy=startY+Math.floor(i/cols)*(sz+gap)+sz/2;
     x.beginPath(); x.arc(cx,cy,sz/2,0,7); x.fillStyle='#4f46e5'; x.fill();
-    x.fillStyle='#fff'; x.font='52px sans-serif'; x.textBaseline='middle'; x.fillText(s.emoji,cx,cy+4); x.textBaseline='alphabetic';
+    x.fillStyle='#fff'; x.font='52px sans-serif'; x.textBaseline='middle'; x.fillText(s.emoji||'✓',cx,cy+4); x.textBaseline='alphabetic';
   });
-  x.fillStyle='#fbbf24'; x.font='80px sans-serif'; x.fillText('🏆', W/2, 720);
+  var trophyY=320+Math.ceil(n/cols)*(sz+gap)+40;
+  x.fillStyle='#fbbf24'; x.font='78px sans-serif'; x.fillText('🏆', W/2, Math.min(trophyY,760));
   x.fillStyle='#e0e7ff'; x.font='600 30px sans-serif';
   var who=me?(me.displayName||me.email.split('@')[0]):'한강러버';
-  x.fillText('@'+who, W/2, 810);
-  x.fillStyle='#818cf8'; x.font='400 24px sans-serif'; x.fillText('안전한 서울의 밤, 6곳 완주', W/2, 855);
+  x.fillText('@'+who, W/2, 840);
   x.fillStyle='rgba(255,255,255,.4)'; x.font='400 22px sans-serif'; x.fillText('routocity.com', W/2, 950);
 }
-function openCard(){ drawCard(); document.getElementById('card-overlay').classList.add('open'); }
-function closeCard(){ document.getElementById('card-overlay').classList.remove('open'); }
-function saveCard(){ var a=document.createElement('a'); a.download='hangang-night.png'; a.href=document.getElementById('card-canvas').toDataURL('image/png'); a.click(); }
+function saveCard(){ var a=document.createElement('a'); a.download='routocity-card.png'; a.href=document.getElementById('card-canvas').toDataURL('image/png'); a.click(); }
 function shareCard(){
-  var c=document.getElementById('card-canvas');
-  c.toBlob(function(blob){
-    var file=new File([blob],'hangang-night.png',{type:'image/png'});
+  document.getElementById('card-canvas').toBlob(function(blob){
+    var file=new File([blob],'routocity.png',{type:'image/png'});
     if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
-      navigator.share({files:[file], title:'한강의 밤 정복!', text:'Routocity에서 한강의 밤 6곳 완주! 🌙'}).catch(function(){});
+      navigator.share({files:[file], title:'코스 정복!', text:'Routocity 도장깨기 완주! 🌙'}).catch(function(){});
     }else{ saveCard(); toast('이미지를 저장했어요. 인스타에 올려보세요!'); }
   });
+}
+
+// ── 관리자 ───────────────────────────────────────
+function openAdmin(){
+  document.getElementById('admin').classList.add('open');
+  if(!draftSpots.length && !editId) newDraft();
+  setTimeout(function(){
+    if(!adminMap){
+      adminMap=L.map('admin-map').setView([37.5512,126.9882],12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(adminMap);
+      adminMap.on('click', adminMapClick);
+    }
+    adminMap.invalidateSize();
+    renderAdminMarkers();
+  },200);
+  renderAdminSpots(); renderAdminCourses();
+}
+function closeAdmin(){ document.getElementById('admin').classList.remove('open'); if(map) setTimeout(function(){map.invalidateSize();},60); }
+function genId(p){ return p+Date.now().toString(36)+Math.floor(Math.random()*900+100); }
+function newDraft(){
+  editId=null; draftSpots=[];
+  document.getElementById('adm-emoji').value=''; document.getElementById('adm-title').value=''; document.getElementById('adm-desc').value='';
+  document.getElementById('admin-json').style.display='none';
+  adminAddSpot();
+}
+function adminAddSpot(){ draftSpots.push({id:genId('s'), emoji:'📍', name:'', hint:'', radius:140, lat:null, lng:null}); renderAdminSpots(); }
+function adminDelSpot(i){ draftSpots.splice(i,1); if(adminPickIndex===i) adminPickIndex=null; renderAdminSpots(); renderAdminMarkers(); }
+function setDraft(i,f,v){ if(!draftSpots[i])return; draftSpots[i][f]=(f==='radius')?(parseInt(v,10)||140):v; }
+function adminPick(i){ adminPickIndex=i; renderAdminSpots(); toast('지도를 클릭해 위치를 지정하세요 📍'); }
+function adminMapClick(e){
+  if(adminPickIndex==null){ toast('먼저 스팟의 "지도에서 위치" 버튼을 누르세요.'); return; }
+  draftSpots[adminPickIndex].lat=e.latlng.lat; draftSpots[adminPickIndex].lng=e.latlng.lng;
+  renderAdminSpots(); renderAdminMarkers();
+}
+function renderAdminSpots(){
+  document.getElementById('admin-spots').innerHTML = draftSpots.map(function(s,i){
+    var coord = (s.lat!=null) ? s.lat.toFixed(5)+', '+s.lng.toFixed(5) : '위치 미지정';
+    return '<div class="aspot'+(adminPickIndex===i?' pick':'')+'">'
+      +'<div class="arow"><input class="ain" style="width:56px;text-align:center;margin:0" value="'+(s.emoji||'')+'" maxlength="2" oninput="setDraft('+i+',\'emoji\',this.value)">'
+      +'<input class="ain" style="margin:0" placeholder="스팟 이름" value="'+(s.name||'').replace(/"/g,'&quot;')+'" oninput="setDraft('+i+',\'name\',this.value)"></div>'
+      +'<input class="ain" placeholder="한 줄 힌트/설명" value="'+(s.hint||'').replace(/"/g,'&quot;')+'" oninput="setDraft('+i+',\'hint\',this.value)">'
+      +'<div class="arow"><input class="ain" type="number" style="width:110px;margin:0" value="'+s.radius+'" oninput="setDraft('+i+',\'radius\',this.value)" title="체크인 반경(m)">'
+      +'<button class="abtn p" onclick="adminPick('+i+')">📍 지도에서 위치</button>'
+      +'<button class="abtn d" onclick="adminDelSpot('+i+')">🗑</button></div>'
+      +'<div class="acoord" style="margin-top:6px">'+coord+'</div></div>';
+  }).join('');
+}
+function renderAdminMarkers(){
+  if(!adminMap) return;
+  adminMarkers.forEach(function(m){ adminMap.removeLayer(m); }); adminMarkers=[];
+  draftSpots.forEach(function(s,i){
+    if(s.lat==null) return;
+    var m=L.marker([s.lat,s.lng],{icon:spotIcon(s)}).addTo(adminMap);
+    m.bindTooltip(s.name||('스팟 '+(i+1)));
+    adminMarkers.push(m);
+  });
+}
+function adminCollect(){
+  var title=document.getElementById('adm-title').value.trim();
+  var spots=draftSpots.filter(function(s){ return s.lat!=null && s.name.trim(); })
+    .map(function(s){ return {id:s.id, emoji:s.emoji||'📍', name:s.name.trim(), hint:s.hint.trim(), radius:s.radius||140, lat:s.lat, lng:s.lng}; });
+  return { id: editId||genId('c'), emoji:document.getElementById('adm-emoji').value.trim()||'📍', title:title, desc:document.getElementById('adm-desc').value.trim(), spots:spots, custom:true };
+}
+function adminSave(){
+  var c=adminCollect();
+  if(!c.title){ toast('코스 이름을 입력해주세요.'); return; }
+  if(!c.spots.length){ toast('위치가 지정된 스팟이 최소 1개 필요해요.'); return; }
+  var list=customCourses();
+  var idx=list.findIndex(function(x){return x.id===c.id;});
+  if(idx>=0) list[idx]=c; else list.push(c);
+  saveCustom(list);
+  loadCourses(); activeId=c.id; loadCollected(); renderMapSpots(); renderChips(); refreshAll(); renderAdminCourses();
+  toast('✅ 코스가 등록됐어요! 지도에서 확인하세요.');
+}
+function adminExport(){
+  var c=adminCollect(); var t=document.getElementById('admin-json');
+  t.style.display='block'; t.value=JSON.stringify(c,null,2); t.focus(); t.select();
+  toast('JSON 복사 → 코드의 SEED 배열에 넣으면 모든 사용자에게 영구 적용돼요.');
+}
+function renderAdminCourses(){
+  var customs=COURSES.filter(function(c){return c.custom;});
+  var el=document.getElementById('admin-courses');
+  if(!customs.length){ el.innerHTML='<div style="color:var(--sub);font-size:13px;padding:6px 0">아직 등록한 커스텀 코스가 없어요.</div>'; return; }
+  el.innerHTML=customs.map(function(c){
+    return '<div class="alist-item"><div style="flex:1"><b>'+(c.emoji||'📍')+' '+c.title+'</b> <span style="color:var(--sub);font-size:12px">· '+c.spots.length+'스팟</span></div>'
+      +'<button class="abtn" onclick="adminEdit(\''+c.id+'\')">수정</button>'
+      +'<button class="abtn d" onclick="adminDelete(\''+c.id+'\')">삭제</button></div>';
+  }).join('');
+}
+function adminEdit(id){
+  var c=COURSES.find(function(x){return x.id===id;}); if(!c) return;
+  editId=c.id; draftSpots=clone(c.spots);
+  document.getElementById('adm-emoji').value=c.emoji||''; document.getElementById('adm-title').value=c.title; document.getElementById('adm-desc').value=c.desc||'';
+  renderAdminSpots(); renderAdminMarkers();
+  if(draftSpots[0]&&draftSpots[0].lat!=null) adminMap.setView([draftSpots[0].lat,draftSpots[0].lng],14);
+  toast('수정 모드: 저장하면 덮어써요.');
+  document.getElementById('admin').scrollTop=0;
+}
+function adminDelete(id){
+  var list=customCourses().filter(function(x){return x.id!==id;});
+  saveCustom(list); loadCourses();
+  if(activeId===id) activeId=COURSES[0].id;
+  loadCollected(); renderMapSpots(); renderChips(); refreshAll(); renderAdminCourses();
+  toast('코스를 삭제했어요.');
 }
 
 document.getElementById('lang-btn').addEventListener('click',function(){
@@ -503,8 +699,16 @@ function bootMap(){
   if(typeof L==='undefined'){ console.error('Leaflet 로드 실패'); showMapError(); return; }
   try{ initMap(); }catch(err){ console.error('지도 초기화 실패:',err); showMapError(); }
 }
+loadCourses();
+updateAdminBtn();
 bootMap();
-loadProgress();
+loadCollected();
+refreshAll();
+
+// 모바일: 화면 회전·주소창 변화 시 지도 리사이즈 (회색 타일 방지)
+function fixMapSize(){ if(map) map.invalidateSize(); }
+window.addEventListener('resize', function(){ setTimeout(fixMapSize,150); });
+window.addEventListener('orientationchange', function(){ setTimeout(fixMapSize,300); });
 </script>
 </body>
 </html>
