@@ -41,7 +41,7 @@
     .fab{width:46px;height:46px;border-radius:50%;background:var(--surface);border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;color:var(--text)}
     .fab.acc{background:var(--accent);color:#fff;border-color:var(--accent)}
 
-    #bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:60;height:calc(var(--bnh) + var(--safeB));padding-bottom:var(--safeB);background:var(--surface);border-top:1px solid var(--border);display:flex}
+    #bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:140;height:calc(var(--bnh) + var(--safeB));padding-bottom:var(--safeB);background:var(--surface);border-top:1px solid var(--border);display:flex}
     #bottom-nav button{flex:1;background:none;border:none;cursor:pointer;color:var(--sub);font-size:11px;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
     #bottom-nav button .i{font-size:20px}
     #bottom-nav button.on{color:var(--accent)}
@@ -135,6 +135,40 @@
     #dev{position:fixed;left:calc(12px + var(--safeL));bottom:calc(var(--bnh) + var(--safeB) + 16px);z-index:55;background:rgba(0,0,0,.72);color:#fff;border-radius:10px;padding:8px 10px;font-size:11px;max-width:150px}
     #dev label{display:flex;align-items:center;gap:6px;cursor:pointer}
     #dev .hint{opacity:.65;margin-top:4px;line-height:1.3}
+
+    /* 동물 코스 모드 */
+    #animal-panel{display:none;position:fixed;left:0;right:0;bottom:calc(var(--bnh) + var(--safeB));z-index:58;background:var(--surface);border-radius:18px 18px 0 0;box-shadow:0 -6px 24px rgba(0,0,0,.14);padding:12px calc(16px + var(--safeR)) 14px calc(16px + var(--safeL));max-height:62dvh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+    #animal-panel.open{display:block}
+    .ap-grip{width:42px;height:5px;border-radius:5px;background:var(--border);margin:0 auto 10px}
+    .ap-label{font-size:12px;font-weight:700;color:var(--sub);margin-bottom:8px}
+    .ap-animals{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+    .ap-ab{flex-shrink:0;width:54px;height:54px;border-radius:14px;border:2px solid var(--border);background:#fafafa;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.12s}
+    .ap-ab.on{border-color:var(--accent);background:#eef0ff;transform:scale(1.04)}
+    .ap-distrow{display:flex;align-items:center;gap:12px;margin:12px 0 4px}
+    #a-dist{flex:1;-webkit-appearance:none;appearance:none;height:8px;border-radius:8px;background:#e6e6ea;outline:none}
+    #a-dist::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:#fff;border:3px solid var(--accent);box-shadow:0 2px 6px rgba(0,0,0,.2);cursor:pointer}
+    #a-dist::-moz-range-thumb{width:28px;height:28px;border-radius:50%;background:#fff;border:3px solid var(--accent);cursor:pointer}
+    #a-distval{font-size:19px;font-weight:900;min-width:70px;text-align:right}
+    #a-distval small{font-size:12px;color:var(--sub);font-weight:700}
+    .ap-btns{display:flex;gap:10px;margin-top:10px}
+    #a-progbar{height:8px;border-radius:8px;background:#ececed;overflow:hidden;margin-top:10px;display:none}
+    #a-progbar.show{display:block}
+    #a-progfill{display:block;height:100%;width:0;background:linear-gradient(90deg,#facc15,#f59e0b);transition:width .2s}
+    .ap-gps{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:10px;font-size:12px;color:var(--sub)}
+    .ap-gps input{width:16px;height:16px}
+    .glowpath{filter:drop-shadow(0 0 5px #fde047) drop-shadow(0 0 12px #fde047)}
+    .glowpath.full{animation:aflash 1.3s ease-in-out infinite}
+    @keyframes aflash{0%,100%{filter:drop-shadow(0 0 6px #fde047) drop-shadow(0 0 14px #fde047)}50%{filter:drop-shadow(0 0 12px #fde047) drop-shadow(0 0 28px #fde047)}}
+    #animal-done{display:none;position:fixed;inset:0;z-index:205;align-items:center;justify-content:center;flex-direction:column;background:rgba(15,21,53,.55);backdrop-filter:blur(3px);text-align:center;padding:calc(24px + var(--safeT)) 24px calc(24px + var(--safeB))}
+    #animal-done.open{display:flex}
+    #animal-done .em{font-size:82px;filter:drop-shadow(0 0 24px #fde047);animation:adpulse 1.1s ease-in-out infinite}
+    #animal-done .t{color:#fff;font-size:24px;font-weight:900;margin-top:10px}
+    #animal-done .s{color:#fde047;font-size:15px;font-weight:700;margin-top:6px}
+    #animal-done .row{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;justify-content:center}
+    #animal-done button{padding:13px 20px;border:none;border-radius:30px;font-size:14px;font-weight:800;cursor:pointer}
+    #animal-done .gold{background:#fde047;color:#3a2e00}
+    #animal-done .ghost2{background:rgba(255,255,255,.16);color:#fff}
+    @keyframes adpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
   </style>
 </head>
 <body>
@@ -183,7 +217,8 @@
 </div>
 
 <div id="bottom-nav">
-  <button class="on" id="nav-map" onclick="showMap()"><span class="i">🗺️</span>지도</button>
+  <button class="on" id="nav-map" onclick="showMap()"><span class="i">🗺️</span>도장깨기</button>
+  <button id="nav-animal" onclick="showAnimal()"><span class="i">🐾</span>동물코스</button>
   <button id="nav-book" onclick="showBook()"><span class="i">📖</span>스탬프북</button>
 </div>
 
@@ -300,6 +335,35 @@
       <button class="pbtn" onclick="doReset()">재설정 링크 보내기</button>
       <div class="mfooter" style="justify-content:center"><span class="mlink" onclick="switchM('login')">← 로그인으로</span></div>
     </div>
+  </div>
+</div>
+
+<div id="animal-panel">
+  <div class="ap-grip"></div>
+  <div class="ap-label">동물 고르기</div>
+  <div class="ap-animals" id="a-animals"></div>
+  <div class="ap-label" style="margin-top:12px">거리</div>
+  <div class="ap-distrow">
+    <input type="range" id="a-dist" min="1" max="10" step="1" value="3">
+    <div id="a-distval">3<small>km</small></div>
+  </div>
+  <div class="ap-btns"><button class="bigbtn" id="a-make" onclick="aPlaceRoute()">이 동물 코스 만들기</button></div>
+  <div class="ap-btns" id="a-runrow" style="display:none">
+    <button class="bigbtn" id="a-runbtn" onclick="aStartSim()">▶ 따라 달리기 (시뮬)</button>
+    <button class="bigbtn ghost" onclick="aResetRoute()">초기화</button>
+  </div>
+  <div id="a-progbar"><i id="a-progfill"></i></div>
+  <div class="ap-gps"><input type="checkbox" id="a-usegps"><label for="a-usegps">실제 GPS로 따라 걷기 (야외)</label></div>
+</div>
+
+<div id="animal-done">
+  <div class="em" id="ad-em">🐱</div>
+  <div class="t">완주! 불이 들어왔어요 ✨</div>
+  <div class="s" id="ad-s">🐱 3.0km 완주</div>
+  <div class="row">
+    <button class="gold" onclick="openAnimalCard()">🎉 완주 카드</button>
+    <button class="ghost2" onclick="aResetRoute()">다시</button>
+    <button class="ghost2" onclick="closeAnimalDone()">닫기</button>
   </div>
 </div>
 
@@ -518,9 +582,33 @@ function doCheckin(){
 
 function openSheet(id){ document.getElementById(id).classList.add('open'); }
 function closeSheet(id){ document.getElementById(id).classList.remove('open'); if(id==='checkin-sheet') activeSpot=null; }
-function showMap(){ document.getElementById('book').classList.remove('open'); navOn('nav-map'); if(map) setTimeout(function(){map.invalidateSize();},60); }
+function showMap(){
+  mode='stamp';
+  document.getElementById('book').classList.remove('open');
+  document.getElementById('animal-panel').classList.remove('open');
+  document.getElementById('course-hdr').style.display='flex';
+  document.getElementById('map-fabs').style.display='flex';
+  document.getElementById('dev').style.display='block';
+  aClearRoute();
+  renderMapSpots();
+  navOn('nav-map');
+  if(map) setTimeout(function(){map.invalidateSize();},60);
+}
+function showAnimal(){
+  mode='animal';
+  document.getElementById('book').classList.remove('open');
+  document.getElementById('course-hdr').style.display='none';
+  document.getElementById('map-fabs').style.display='none';
+  document.getElementById('dev').style.display='none';
+  closeSheet('course-sheet'); closeSheet('checkin-sheet');
+  if(map) clearSpotMarkers();
+  if(!aBuilt){ aBuildUI(); aBuilt=true; }
+  document.getElementById('animal-panel').classList.add('open');
+  navOn('nav-animal');
+  if(map) setTimeout(function(){map.invalidateSize();},60);
+}
 function showBook(){ renderBook(); document.getElementById('book').classList.add('open'); navOn('nav-book'); }
-function navOn(id){ ['nav-map','nav-book'].forEach(function(k){document.getElementById(k).classList.toggle('on',k===id);}); }
+function navOn(id){ ['nav-map','nav-animal','nav-book'].forEach(function(k){document.getElementById(k).classList.toggle('on',k===id);}); }
 
 function refreshAll(){
   updateHeader();
@@ -530,9 +618,10 @@ function refreshAll(){
 function renderBook(){
   var totalStamps=0, done=0;
   COURSES.forEach(function(c){ var n=getCollectedSet(c.id).size; totalStamps+=n; if(n>=c.spots.length&&c.spots.length>0) done++; });
+  var adones=getAnimalDones();
   document.getElementById('bk-stamps').textContent=totalStamps;
-  document.getElementById('bk-courses').textContent=done;
-  document.getElementById('book-sections').innerHTML = COURSES.map(function(c){
+  document.getElementById('bk-courses').textContent=done+adones.length;
+  var html = COURSES.map(function(c){
     var set=getCollectedSet(c.id), full=c.spots.length>0&&set.size>=c.spots.length;
     var slots=c.spots.map(function(s){
       var f=set.has(s.id);
@@ -543,6 +632,14 @@ function renderBook(){
       +(full?'<button class="bigbtn" style="margin-top:14px" onclick="openCard(\''+c.id+'\')">🏆 완주! 카드 보기 / 공유</button>':'')
       +'</div>';
   }).join('');
+  if(adones.length){
+    html += '<div class="booksec"><h4>🐾 동물 코스 <span style="font-weight:600;color:var(--sub);font-size:12px">'+adones.length+'개 완주</span></h4><div class="slots">'
+      + adones.map(function(a){ return '<div class="slot f">'+a.emoji+'<span class="lbl">'+a.name+' '+a.km+'km</span></div>'; }).join('')
+      + '</div></div>';
+  } else {
+    html += '<div class="booksec"><h4>🐾 동물 코스</h4><div style="color:var(--sub);font-size:13px;line-height:1.5">아직 완주한 동물 코스가 없어요.<br>하단 <b>동물코스</b> 탭에서 도전해보세요!</div></div>';
+  }
+  document.getElementById('book-sections').innerHTML = html;
 }
 
 // ── 완주 카드 ────────────────────────────────────
@@ -693,6 +790,143 @@ document.getElementById('dev-sim').addEventListener('change',function(){
   simMode=this.checked; if(activeSpot) updateCheckinStatus();
   toast(simMode?'🧪 위치 시뮬 ON — 스팟을 눌러 체크인 테스트':'시뮬 OFF');
 });
+
+// ── 동물 코스 모드 ───────────────────────────────
+var mode='stamp', aBuilt=false;
+var ANIMALS={
+  cat:{emoji:'🐱', name:'고양이', pts:[[0.50,0.12],[0.36,0.20],[0.28,0.34],[0.24,0.50],[0.25,0.60],[0.18,0.84],[0.34,0.66],[0.44,0.70],[0.50,0.66],[0.56,0.70],[0.66,0.66],[0.82,0.84],[0.75,0.60],[0.76,0.50],[0.72,0.34],[0.64,0.20],[0.50,0.12]]},
+  rabbit:{emoji:'🐰', name:'토끼', pts:[[0.50,0.08],[0.37,0.16],[0.34,0.34],[0.36,0.46],[0.30,0.66],[0.32,0.88],[0.40,0.97],[0.44,0.86],[0.46,0.62],[0.50,0.54],[0.54,0.62],[0.56,0.86],[0.60,0.97],[0.68,0.88],[0.70,0.66],[0.64,0.46],[0.66,0.34],[0.63,0.16],[0.50,0.08]]},
+  fish:{emoji:'🐟', name:'물고기', pts:[[0.06,0.50],[0.18,0.62],[0.36,0.67],[0.54,0.64],[0.66,0.58],[0.80,0.72],[0.72,0.50],[0.80,0.28],[0.66,0.42],[0.54,0.36],[0.36,0.33],[0.18,0.38],[0.06,0.50]]},
+  duck:{emoji:'🦆', name:'오리', pts:[[0.06,0.60],[0.10,0.66],[0.22,0.66],[0.30,0.82],[0.40,0.74],[0.42,0.56],[0.60,0.60],[0.90,0.66],[0.84,0.48],[0.62,0.40],[0.46,0.42],[0.30,0.40],[0.16,0.52],[0.06,0.58],[0.06,0.60]]},
+  bear:{emoji:'🐻', name:'곰', pts:[[0.50,0.16],[0.34,0.20],[0.26,0.28],[0.30,0.36],[0.24,0.46],[0.26,0.62],[0.36,0.74],[0.50,0.78],[0.64,0.74],[0.74,0.62],[0.76,0.46],[0.70,0.36],[0.74,0.28],[0.66,0.20],[0.50,0.16]]}
+};
+var aCur='cat', aKm=3, aRoutePts=[], aProg=0, aFull=null, aLit=null, aGlow=null, aRunner=null, aSim=null, aGps=null, aDone=false;
+
+function aRenderAnimals(){
+  document.getElementById('a-animals').innerHTML=Object.keys(ANIMALS).map(function(k){
+    return '<button class="ap-ab'+(k===aCur?' on':'')+'" onclick="aPick(\''+k+'\')" title="'+ANIMALS[k].name+'">'+ANIMALS[k].emoji+'</button>';
+  }).join('');
+}
+function aBuildUI(){
+  aRenderAnimals();
+  var de=document.getElementById('a-dist'); de.addEventListener('input',aSyncDist); aSyncDist();
+  document.getElementById('a-usegps').addEventListener('change',function(){ if(this.checked) aStartGps(); else aStopGps(); });
+}
+function aPick(k){ aCur=k; aRenderAnimals(); }
+function aSyncDist(){ aKm=parseInt(document.getElementById('a-dist').value,10); document.getElementById('a-distval').innerHTML=aKm+'<small>km</small>'; }
+
+function aResample(pts,n){
+  var seg=[],total=0;
+  for(var i=1;i<pts.length;i++){var d=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);seg.push(d);total+=d;}
+  var out=[pts[0]],step=total/(n-1),si=0,segacc=0;
+  for(var j=1;j<n-1;j++){
+    var want=step*j;
+    while(si<seg.length-1 && segacc+seg[si]<want){segacc+=seg[si];si++;}
+    var t=(seg[si]>0)?(want-segacc)/seg[si]:0;
+    out.push([pts[si][0]+(pts[si+1][0]-pts[si][0])*t, pts[si][1]+(pts[si+1][1]-pts[si][1])*t]);
+  }
+  out.push(pts[pts.length-1]); return out;
+}
+function aNormLen(pts){var t=0;for(var i=1;i<pts.length;i++)t+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);return t;}
+
+function aPlaceRoute(){
+  aClearRoute();
+  if(!map) return;
+  var base=aResample(ANIMALS[aCur].pts,90);
+  var c=map.getCenter(), clat=c.lat, clng=c.lng;
+  var Ln=aNormLen(base), targetM=aKm*1000;
+  var D=targetM/(Ln*111320);
+  function toLL(D){ return base.map(function(p){ return {lat:clat+(p[1]-0.5)*D, lng:clng+(p[0]-0.5)*D/Math.cos(clat*Math.PI/180)}; }); }
+  var ll=toLL(D), actual=0; for(var i=1;i<ll.length;i++) actual+=distM(ll[i-1],ll[i]);
+  if(actual>0){ D*=targetM/actual; ll=toLL(D); }
+  aRoutePts=ll; aProg=0; aDone=false;
+  var latlngs=ll.map(function(p){return [p.lat,p.lng];});
+  aGlow=L.polyline(latlngs,{color:'#fde047',weight:16,opacity:0,lineCap:'round',lineJoin:'round'}).addTo(map);
+  aFull=L.polyline(latlngs,{color:'#b7bdc9',weight:6,opacity:.65,dashArray:'1 12',lineCap:'round'}).addTo(map);
+  aLit =L.polyline([],{color:'#fde047',weight:8,opacity:1,lineCap:'round',lineJoin:'round',className:'glowpath'}).addTo(map);
+  aRunner=L.marker(latlngs[0],{icon:L.divIcon({html:'<div style="font-size:26px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))">'+ANIMALS[aCur].emoji+'</div>',className:'course-pin',iconSize:[28,28],iconAnchor:[14,14]})}).addTo(map);
+  map.fitBounds(latlngs,{padding:[70,70]});
+  document.getElementById('a-runrow').style.display='flex';
+  document.getElementById('a-progbar').classList.add('show');
+  document.getElementById('a-make').textContent='다른 코스로 다시 만들기';
+  aSetProgress(0);
+}
+function aSetProgress(idx){
+  aProg=idx;
+  if(aLit) aLit.setLatLngs(aRoutePts.slice(0,idx+1).map(function(p){return [p.lat,p.lng];}));
+  if(aRunner&&aRoutePts[idx]) aRunner.setLatLng([aRoutePts[idx].lat,aRoutePts[idx].lng]);
+  var pct=Math.round(idx/(aRoutePts.length-1)*100);
+  document.getElementById('a-progfill').style.width=pct+'%';
+  if(idx>=aRoutePts.length-1 && !aDone) aFinish();
+}
+function aStartSim(){
+  if(aSim){ aStopSim(); return; }
+  if(!aRoutePts.length) return;
+  document.getElementById('a-runbtn').textContent='⏸ 멈춤';
+  var i=aProg;
+  aSim=setInterval(function(){ i++; if(i>=aRoutePts.length){ aStopSim(); aSetProgress(aRoutePts.length-1); return; } aSetProgress(i); }, Math.max(40,7000/aRoutePts.length));
+}
+function aStopSim(){ if(aSim){clearInterval(aSim);aSim=null;} var b=document.getElementById('a-runbtn'); if(b) b.textContent='▶ 따라 달리기 (시뮬)'; }
+function aStartGps(){
+  if(!navigator.geolocation){ toast('이 브라우저는 위치를 지원하지 않아요.'); return; }
+  if(!aRoutePts.length){ toast('먼저 코스를 만들어주세요.'); document.getElementById('a-usegps').checked=false; return; }
+  toast('야외에서 동물 모양대로 움직여보세요!');
+  aGps=navigator.geolocation.watchPosition(function(pos){
+    var meP={lat:pos.coords.latitude,lng:pos.coords.longitude}, best=-1,bd=1e9;
+    for(var i=0;i<aRoutePts.length;i++){var d=distM(meP,aRoutePts[i]); if(d<bd){bd=d;best=i;}}
+    if(bd<=30 && best>aProg) aSetProgress(best);
+  }, function(){ toast('위치 권한이 필요해요.'); }, {enableHighAccuracy:true,maximumAge:3000,timeout:15000});
+}
+function aStopGps(){ if(aGps!=null){navigator.geolocation.clearWatch(aGps);aGps=null;} }
+function aFinish(){
+  aDone=true; aStopSim();
+  if(aLit){ aLit.setStyle({weight:9}); if(aLit._path) aLit._path.classList.add('full'); }
+  if(aGlow) aGlow.setStyle({opacity:.4});
+  saveAnimalDone(aCur,aKm);
+  document.getElementById('ad-em').textContent=ANIMALS[aCur].emoji;
+  document.getElementById('ad-s').textContent=ANIMALS[aCur].emoji+' '+aKm+'.0km 완주';
+  document.getElementById('animal-done').classList.add('open');
+}
+function aResetRoute(){
+  document.getElementById('animal-done').classList.remove('open');
+  if(aRoutePts.length){ aProg=0; aDone=false; if(aLit&&aLit._path) aLit._path.classList.remove('full'); if(aGlow) aGlow.setStyle({opacity:0}); aSetProgress(0); }
+}
+function aClearRoute(){
+  aStopSim(); aStopGps();
+  var g=document.getElementById('a-usegps'); if(g) g.checked=false;
+  [aFull,aLit,aGlow,aRunner].forEach(function(l){ if(l&&map) map.removeLayer(l); });
+  aFull=aLit=aGlow=aRunner=null; aRoutePts=[]; aDone=false;
+  var dn=document.getElementById('animal-done'); if(dn) dn.classList.remove('open');
+  var rr=document.getElementById('a-runrow'); if(rr) rr.style.display='none';
+  var pb=document.getElementById('a-progbar'); if(pb) pb.classList.remove('show');
+  var mk=document.getElementById('a-make'); if(mk) mk.textContent='이 동물 코스 만들기';
+}
+function closeAnimalDone(){ document.getElementById('animal-done').classList.remove('open'); }
+
+function keyAnimals(){ return 'routo_animals_'+(me?me.uid:'guest'); }
+function getAnimalDones(){ try{ var r=localStorage.getItem(keyAnimals()); return r?JSON.parse(r):[]; }catch(e){ return []; } }
+function saveAnimalDone(animal,km){
+  var list=getAnimalDones();
+  list.unshift({animal:animal, km:km, emoji:ANIMALS[animal].emoji, name:ANIMALS[animal].name, date:Date.now()});
+  try{ localStorage.setItem(keyAnimals(), JSON.stringify(list.slice(0,50))); }catch(e){}
+}
+function openAnimalCard(){ document.getElementById('animal-done').classList.remove('open'); drawAnimalCard(aCur,aKm); document.getElementById('card-overlay').classList.add('open'); }
+function drawAnimalCard(animal,km){
+  var cv=document.getElementById('card-canvas'),x=cv.getContext('2d'),W=cv.width,H=cv.height;
+  var g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#1b2660');g.addColorStop(1,'#0a0f2c');x.fillStyle=g;x.fillRect(0,0,W,H);
+  for(var i=0;i<60;i++){x.fillStyle='rgba(255,255,255,'+(Math.random()*0.5+0.1).toFixed(2)+')';x.beginPath();x.arc(Math.random()*W,Math.random()*H*0.55,Math.random()*1.6+0.4,0,7);x.fill();}
+  x.textAlign='center';
+  x.fillStyle='#c7d2fe';x.font='600 30px sans-serif';x.fillText('🐾 ROUTOCITY',W/2,90);
+  x.fillStyle='#fff';x.font='800 50px sans-serif';x.fillText('동물 코스 완주!',W/2,170);
+  x.fillStyle='#a5b4fc';x.font='400 26px sans-serif';
+  var d=new Date();x.fillText(d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate()+' · '+km+'km',W/2,222);
+  x.textBaseline='middle';x.shadowColor='#fde047';x.shadowBlur=45;x.font='210px sans-serif';
+  x.fillText(ANIMALS[animal].emoji,W/2,H/2+10);
+  x.shadowBlur=0;x.textBaseline='alphabetic';
+  x.fillStyle='#fde047';x.font='800 36px sans-serif';x.fillText(ANIMALS[animal].name+' '+km+'km',W/2,H/2+210);
+  x.fillStyle='#e0e7ff';x.font='600 28px sans-serif';var who=me?(me.displayName||me.email.split('@')[0]):'러너';x.fillText('@'+who,W/2,915);
+  x.fillStyle='rgba(255,255,255,.4)';x.font='400 22px sans-serif';x.fillText('routocity.com',W/2,962);
+}
 
 function showMapError(){ var b=document.getElementById('map-error'); if(b) b.style.display='flex'; }
 function bootMap(){
