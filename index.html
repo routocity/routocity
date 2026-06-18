@@ -800,7 +800,10 @@ var ANIMALS={
   duck:{emoji:'🦆', name:'오리', pts:[[0.06,0.60],[0.10,0.66],[0.22,0.66],[0.30,0.82],[0.40,0.74],[0.42,0.56],[0.60,0.60],[0.90,0.66],[0.84,0.48],[0.62,0.40],[0.46,0.42],[0.30,0.40],[0.16,0.52],[0.06,0.58],[0.06,0.60]]},
   bear:{emoji:'🐻', name:'곰', pts:[[0.50,0.16],[0.34,0.20],[0.26,0.28],[0.30,0.36],[0.24,0.46],[0.26,0.62],[0.36,0.74],[0.50,0.78],[0.64,0.74],[0.74,0.62],[0.76,0.46],[0.70,0.36],[0.74,0.28],[0.66,0.20],[0.50,0.16]]}
 };
-var aCur='cat', aKm=3, aRoutePts=[], aProg=0, aFull=null, aLit=null, aGlow=null, aRunner=null, aSim=null, aGps=null, aDone=false;
+// 보행 라우팅: OpenRouteService 무료 키를 넣으면 사람이 걷는 보행로로만 코스가 만들어집니다.
+// 비워두면 키 없이 동작하는 OSRM(차도) 데모로 자동 폴백합니다. 키 발급: https://openrouteservice.org/dev/#/signup
+var A_ORS_KEY='';
+var aCur='cat', aKm=3, aRoutePts=[], aProg=0, aFull=null, aLit=null, aGlow=null, aGhost=null, aRunner=null, aSim=null, aGps=null, aDone=false;
 
 function aRenderAnimals(){
   document.getElementById('a-animals').innerHTML=Object.keys(ANIMALS).map(function(k){
@@ -829,26 +832,68 @@ function aResample(pts,n){
 }
 function aNormLen(pts){var t=0;for(var i=1;i<pts.length;i++)t+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);return t;}
 
-function aPlaceRoute(){
+// 동물 정규화 좌표를 목표 거리에 맞춰 위경도로 변환 (도로 무시한 '이상적' 모양)
+function aIdealLL(scaleD,clat,clng,base){
+  return base.map(function(p){ return {lat:clat+(p[1]-0.5)*scaleD, lng:clng+(p[0]-0.5)*scaleD/Math.cos(clat*Math.PI/180)}; });
+}
+// 웨이포인트를 실제 도로망에 스냅. ORS 키 있으면 보행로, 없으면 OSRM 차도(데모). 반환 {pts,dist,foot}
+async function aSnapToRoads(wp){
+  if(A_ORS_KEY){
+    var body={coordinates:wp.map(function(p){return [p.lng,p.lat];}),continue_straight:false};
+    var r=await fetch('https://api.openrouteservice.org/v2/directions/foot-walking/geojson',{
+      method:'POST',headers:{'Authorization':A_ORS_KEY,'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!r.ok) throw new Error('ORS '+r.status);
+    var j=await r.json(), f=j.features[0];
+    return {pts:f.geometry.coordinates.map(function(c){return {lat:c[1],lng:c[0]};}),dist:f.properties.summary.distance,foot:true};
+  }
+  var coords=wp.map(function(p){return p.lng+','+p.lat;}).join(';');
+  var r2=await fetch('https://router.project-osrm.org/route/v1/driving/'+coords+'?overview=full&geometries=geojson&continue_straight=false');
+  if(!r2.ok) throw new Error('OSRM '+r2.status);
+  var j2=await r2.json();
+  if(!j2.routes||!j2.routes.length) throw new Error('no route');
+  return {pts:j2.routes[0].geometry.coordinates.map(function(c){return {lat:c[1],lng:c[0]};}),dist:j2.routes[0].distance,foot:false};
+}
+
+async function aPlaceRoute(){
   aClearRoute();
   if(!map) return;
-  var base=aResample(ANIMALS[aCur].pts,90);
-  var c=map.getCenter(), clat=c.lat, clng=c.lng;
-  var Ln=aNormLen(base), targetM=aKm*1000;
-  var D=targetM/(Ln*111320);
-  function toLL(D){ return base.map(function(p){ return {lat:clat+(p[1]-0.5)*D, lng:clng+(p[0]-0.5)*D/Math.cos(clat*Math.PI/180)}; }); }
-  var ll=toLL(D), actual=0; for(var i=1;i<ll.length;i++) actual+=distM(ll[i-1],ll[i]);
-  if(actual>0){ D*=targetM/actual; ll=toLL(D); }
-  aRoutePts=ll; aProg=0; aDone=false;
-  var latlngs=ll.map(function(p){return [p.lat,p.lng];});
-  aGlow=L.polyline(latlngs,{color:'#fde047',weight:16,opacity:0,lineCap:'round',lineJoin:'round'}).addTo(map);
-  aFull=L.polyline(latlngs,{color:'#b7bdc9',weight:6,opacity:.65,dashArray:'1 12',lineCap:'round'}).addTo(map);
+  var mk=document.getElementById('a-make');
+  var c=map.getCenter(), clat=c.lat, clng=c.lng, targetM=aKm*1000;
+
+  // 1) 이상적 동물 모양을 목표 거리에 맞춰 스케일 (항상 먼저 흐리게 그려서 '빈 지도' 방지)
+  var base=aResample(ANIMALS[aCur].pts,72);
+  var Ln=aNormLen(base), D=targetM/(Ln*111320);
+  var ideal=aIdealLL(D,clat,clng,base), actual=0;
+  for(var i=1;i<ideal.length;i++) actual+=distM(ideal[i-1],ideal[i]);
+  if(actual>0){ D*=targetM/actual; ideal=aIdealLL(D,clat,clng,base); }
+  var ghostLL=ideal.map(function(p){return [p.lat,p.lng];});
+  aGhost=L.polyline(ghostLL,{color:'#9b8fff',weight:2,opacity:.5,dashArray:'5 7',lineCap:'round'}).addTo(map);
+  map.fitBounds(ghostLL,{padding:[70,70]});
+
+  // 2) 성긴 웨이포인트(약 26개)를 도로망에 스냅 → 실제 걷는 코스
+  if(mk){ mk.disabled=true; mk.textContent='길 위에 코스 그리는 중…'; }
+  var wpBase=aResample(ANIMALS[aCur].pts,26);
+  var wp=aIdealLL(D,clat,clng,wpBase);
+  var snapped=null; try{ snapped=await aSnapToRoads(wp); }catch(e){ snapped=null; }
+  if(mk) mk.disabled=false;
+
+  var routeLL;
+  if(snapped && snapped.pts.length>2){
+    aRoutePts=snapped.pts; routeLL=aRoutePts.map(function(p){return [p.lat,p.lng];});
+    toast((snapped.foot?'🚶 보행로':'🚗 차도(데모)')+' 코스 · 약 '+(snapped.dist/1000).toFixed(2)+'km');
+  } else {
+    aRoutePts=ideal; routeLL=ghostLL;
+    toast('도로 스냅 실패 — 동물 모양 그대로 표시했어요. 중심을 도로 많은 곳으로 옮겨보세요.');
+  }
+  aProg=0; aDone=false;
+  aGlow=L.polyline(routeLL,{color:'#fde047',weight:16,opacity:0,lineCap:'round',lineJoin:'round'}).addTo(map);
+  aFull=L.polyline(routeLL,{color:'#6b7280',weight:6,opacity:.9,lineCap:'round',lineJoin:'round'}).addTo(map);
   aLit =L.polyline([],{color:'#fde047',weight:8,opacity:1,lineCap:'round',lineJoin:'round',className:'glowpath'}).addTo(map);
-  aRunner=L.marker(latlngs[0],{icon:L.divIcon({html:'<div style="font-size:26px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))">'+ANIMALS[aCur].emoji+'</div>',className:'course-pin',iconSize:[28,28],iconAnchor:[14,14]})}).addTo(map);
-  map.fitBounds(latlngs,{padding:[70,70]});
+  aRunner=L.marker(routeLL[0],{icon:L.divIcon({html:'<div style="font-size:26px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))">'+ANIMALS[aCur].emoji+'</div>',className:'course-pin',iconSize:[28,28],iconAnchor:[14,14]})}).addTo(map);
+  map.fitBounds(routeLL,{padding:[70,70]});
   document.getElementById('a-runrow').style.display='flex';
   document.getElementById('a-progbar').classList.add('show');
-  document.getElementById('a-make').textContent='다른 코스로 다시 만들기';
+  if(mk) mk.textContent='다른 코스로 다시 만들기';
   aSetProgress(0);
 }
 function aSetProgress(idx){
@@ -894,8 +939,8 @@ function aResetRoute(){
 function aClearRoute(){
   aStopSim(); aStopGps();
   var g=document.getElementById('a-usegps'); if(g) g.checked=false;
-  [aFull,aLit,aGlow,aRunner].forEach(function(l){ if(l&&map) map.removeLayer(l); });
-  aFull=aLit=aGlow=aRunner=null; aRoutePts=[]; aDone=false;
+  [aFull,aLit,aGlow,aGhost,aRunner].forEach(function(l){ if(l&&map) map.removeLayer(l); });
+  aFull=aLit=aGlow=aGhost=aRunner=null; aRoutePts=[]; aDone=false;
   var dn=document.getElementById('animal-done'); if(dn) dn.classList.remove('open');
   var rr=document.getElementById('a-runrow'); if(rr) rr.style.display='none';
   var pb=document.getElementById('a-progbar'); if(pb) pb.classList.remove('show');
